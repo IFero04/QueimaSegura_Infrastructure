@@ -56,8 +56,8 @@ def main():
 if __name__ == '__main__':
     print("Loading DataBase ...")
     while not check_db(PG_HOST, PG_PORT, PG_DB_NAME, PG_USER, PG_PASSWORD):
-        print("Retrying in 30 seconds ...")
-        time.sleep(30)
+        print("Retrying in 15 seconds ...")
+        time.sleep(15)
 
     print("DataBase loaded.")
     main()

@@ -58,6 +58,8 @@ def new_user(data):
             """
             parameters = (user['full_name'], user['email'], user['password'], user['NIF'], session, )
             result = db.execute_query(query, parameters, multi=False)
+            if not result:
+                raise Exception('User not created')
 
             if user_id := result[0]:
                 return {
@@ -68,8 +70,7 @@ def new_user(data):
                         'session_id': session
                     }
                 }, 201
-            
-            raise Exception('User not created')
+
     except Exception as e:
         return {
             'status': 'ERROR!',
@@ -104,6 +105,8 @@ def login(data):
             """
             parameters = (user['email'], user['password'], )
             result = db.execute_query(query, parameters, multi=False)
+            if not result:  
+                raise Exception('User not found')
 
             if user_id := result[0]:
                 query = """
@@ -122,8 +125,6 @@ def login(data):
                         'session_id': session
                     }
                 }, 200
-            
-            raise Exception('User not found')
 
     except Exception as e:
         return {
@@ -145,6 +146,8 @@ def logout(args):
             """
             parameters = (user_id, )
             result = db.execute_query(query, parameters, multi=False)
+            if not result:
+                raise Exception('User not found')
 
             if active_session := result[0]:
                 if active_session != session_id:
@@ -162,8 +165,6 @@ def logout(args):
                     'status': 'OK!',
                     'message': 'User logged out successfully!'
                 }, 200
-            
-            raise Exception('User not found')
 
     except Exception as e:
         return {
@@ -201,6 +202,8 @@ def update_user(data):
 
             parameters = (user['user_id'], )
             result = db.execute_query(query, parameters, multi=False)
+            if not result:
+                raise Exception('User not found')
             
             if active_session := result[0]:
                 if active_session != user['session_id']:
@@ -219,8 +222,6 @@ def update_user(data):
                     'message': 'User updated successfully!'
                 }, 200
             
-            raise Exception('User not found')
-
     except Exception as e:
         return {
             'status': 'ERROR!',
