@@ -51,4 +51,3 @@ Thumbs.db
 /.idea
 /venv
 **/__pycache__
-src/queimadas_api/api/__pycache__/users.cpython-312.pyc
