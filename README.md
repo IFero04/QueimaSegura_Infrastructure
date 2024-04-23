@@ -9,10 +9,10 @@ Registro de usuário:
 ```json
 {
     "user": {
-        "full_name": "Teste" (mais de 3 caracteres),
-        "email": "af@gmail.com" (formato de email),
-        "password": MD5Hash (tem de ser uma hash MD5),
-        "NIF": "123456789" (validação de NIF)
+        "full_name": "Teste", //Mais de 3 caracteres
+        "email": "af@gmail.com", //Formato de email
+        "password": "MD5Hash", //Tem de ser uma hash MD5
+        "NIF": "123456789" //validação de NIF
     }
 }
 ```
@@ -22,8 +22,8 @@ Retorna:
     "status": "OK!",
     "message": "User created successfully!",
     "result": {
-        "user_id": user_id (UUID),
-        "session_id": session (UUID)
+        "user_id": "user_id", //UUID
+        "session_id": "session" //UUID
     }
 }
 ```
@@ -33,12 +33,12 @@ Retorna:
 - **Endpoint:** `/api/users/login`
 - **Método:** POST
 
-Registro de usuário:
+Login de usuário:
 ```json
 {
     "user": {
-        "email": "af@gmail.com" (formato de email),
-        "password": MD5Hash (tem de ser uma hash MD5)
+        "email": "af@gmail.com", //formato de email
+        "password": "MD5Hash", //Tem de ser uma hash MD5
     }
 }
 ```
