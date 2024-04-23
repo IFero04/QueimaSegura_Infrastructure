@@ -21,36 +21,37 @@ def login():
     data = request.get_json()
     return login(data)
 
-@app.route('/api/users/logout/<id>/<session_id>', methods=['DELETE'])
+@app.route('/api/users/logout/<user_id>/<session_id>', methods=['DELETE'])
 def logout():
     from api.users import logout
     args = request.args
     return logout(args)
 
+@app.route('/api/users/update', methods=['PATCH'])
+def update_user():
+    from api.users import update_user
+    data = request.get_json()
+    return update_user(data)
      
+
 def main():
-    from api.users import new_user, login, logout
+    from api.users import new_user, login, logout, update_user
 
     try:
         data = {
             'user': {
-                'full_name': 'Teste',
-                'email': 'af1213@gmail.com',
+                #'id': '0dbf7879-1704-42f8-aec8-2e945a64f601',
+                #'session_id': 'f856d66d-826d-44ba-bf8a-ba972e379bc0',
+                #'full_name': 'Teste',
+                'email': 'af12@gmail.com',
                 'password': 'e10adc3949ba59abbe56e057f20f883e',
-                'NIF': '123456789',
+                #'NIF': '223456789',
             }
         }
-        #new_user(data)
-        data1 = {
-            'args': {
-                'id': 'f98418b2-bbf7-40f2-bd1e-a57c2bd8ad7e',
-                'session_id': '8870262d-9ad9-482f-9166-a1a19f33d42c',
-            }
-        }
-        result = logout()
+        result = login(data)
         print(result)
     except Exception as e:
-        print(e)
+        print('Error: ', e)
 
 if __name__ == '__main__':
     print("Loading DataBase ...")

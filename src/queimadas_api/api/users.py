@@ -32,7 +32,7 @@ def __check_nif(nif):
 def _check_new_user(user):
     expected_keys = {'full_name', 'email', 'password', 'NIF'}
     keys = user.keys()
-    missing_keys = expected_keys - set(user.keys())
+    missing_keys = expected_keys - set(keys)
 
     if keys != expected_keys:
         raise Exception('Invalid keys')
@@ -56,8 +56,8 @@ def new_user(data):
                 VALUES (%s, %s, %s, %s, %s)
                 RETURNING id
             """
-            parameters = (user['full_name'], user['email'], user['password'], user['NIF'], session)
-            result = db.execute_query(query, parameters)
+            parameters = (user['full_name'], user['email'], user['password'], user['NIF'], session, )
+            result = db.execute_query(query, parameters, multi=False)
 
             if user_id := result[0]:
                 return {
@@ -77,23 +77,23 @@ def new_user(data):
         }, 400
 
 ## LOGIN
-def _check_login(login):
+def _check_login(user):
     expected_keys = {'email', 'password'}
-    keys = login.keys()
-    missing_keys = expected_keys - set(login.keys())
+    keys = user.keys()
+    missing_keys = expected_keys - set(keys)
 
     if keys != expected_keys:
         raise Exception('Invalid keys')
     if missing_keys:
         raise Exception(f'Missing keys: {missing_keys}')
 
-    __check_email(login['email'])
-    __check_password(login['password'])
+    __check_email(user['email'])
+    __check_password(user['password'])
 
 def login(data):
     try:
-        login = data['login']
-        _check_login(login)
+        user = data['user']
+        _check_login(user)
         session = str(uuid.uuid4())
 
         with PostgresDB(PG_HOST, PG_PORT, PG_DB_NAME, PG_USER, PG_PASSWORD) as db:
@@ -102,8 +102,8 @@ def login(data):
                 FROM users
                 WHERE email = %s AND password = %s
             """
-            parameters = (login['email'], login['password'])
-            result = db.execute_query(query, parameters)
+            parameters = (user['email'], user['password'], )
+            result = db.execute_query(query, parameters, multi=False)
 
             if user_id := result[0]:
                 query = """
@@ -111,7 +111,7 @@ def login(data):
                     SET session_id = %s
                     WHERE id = %s
                 """
-                parameters = (session, user_id)
+                parameters = (session, user_id, )
                 db.execute_query(query, parameters, fetch=False)
 
                 return {
@@ -134,7 +134,7 @@ def login(data):
 ## LOGOUT
 def logout(args):
     try:
-        user_id = args['id']
+        user_id = args['user_id']
         session_id = args['session_id']
 
         with PostgresDB(PG_HOST, PG_PORT, PG_DB_NAME, PG_USER, PG_PASSWORD) as db:
@@ -143,8 +143,8 @@ def logout(args):
                 FROM users
                 WHERE id = %s
             """
-            parameters = (user_id)
-            result = db.execute_query(query, parameters)
+            parameters = (user_id, )
+            result = db.execute_query(query, parameters, multi=False)
 
             if active_session := result[0]:
                 if active_session != session_id:
@@ -155,12 +155,68 @@ def logout(args):
                     SET session_id = NULL
                     WHERE id = %s
                 """
-                parameters = (user_id)
+                parameters = (user_id, )
                 db.execute_query(query, parameters, fetch=False)
     
                 return {
                     'status': 'OK!',
                     'message': 'User logged out successfully!'
+                }, 200
+            
+            raise Exception('User not found')
+
+    except Exception as e:
+        return {
+            'status': 'ERROR!',
+            'message': str(e)
+        }, 400
+
+## UPDATE
+def _check_update_user(user):
+    expected_keys = {'user_id', 'session_id', 'full_name', 'email', 'password', 'NIF'}
+    keys = user.keys()
+    missing_keys = expected_keys - set(keys)
+
+    if keys != expected_keys:
+        raise Exception('Invalid keys')
+    if missing_keys:
+        raise Exception(f'Missing keys: {missing_keys}')
+
+    __check_full_name(user['full_name'])
+    __check_email(user['email'])
+    __check_password(user['password'])
+    __check_nif(user['NIF'])
+
+def update_user(data):
+    try:
+        user = data['user']
+        _check_update_user(user)
+
+        with PostgresDB(PG_HOST, PG_PORT, PG_DB_NAME, PG_USER, PG_PASSWORD) as db:
+            query = """
+                SELECT session_id
+                FROM users
+                WHERE id = %s
+            """
+
+            parameters = (user['user_id'], )
+            result = db.execute_query(query, parameters, multi=False)
+            
+            if active_session := result[0]:
+                if active_session != user['session_id']:
+                    raise Exception('Session_id does not match')
+                
+                query = """
+                    UPDATE users
+                    SET full_name = %s, email = %s, password = %s, nif = %s
+                    WHERE id = %s
+                """
+                parameters = (user['full_name'], user['email'], user['password'], user['NIF'], user['id'], )
+                db.execute_query(query, parameters, fetch=False)
+    
+                return {
+                    'status': 'OK!',
+                    'message': 'User updated successfully!'
                 }, 200
             
             raise Exception('User not found')
