@@ -48,8 +48,8 @@ Retorna:
     "status": "OK!",
     "message": "User logged in successfully!",
     "result": {
-        "user_id": user_id (UUID),
-        "session_id": session (UUID)
+        "user_id": "user_id", //UUID
+        "session_id": "session" //UUID
     }
 }
 ```
