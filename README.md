@@ -1,6 +1,8 @@
 # QUEIMADAS API
 
-## Register
+## Users 
+
+### Register
 
 - **Endpoint:** `/api/users/register`
 - **Método:** POST
@@ -28,7 +30,7 @@ Retorna:
 }
 ```
 
-## Login
+### Login
 
 - **Endpoint:** `/api/users/login`
 - **Método:** POST
@@ -54,7 +56,7 @@ Retorna:
 }
 ```
 
-# Logout
+### Logout
 
 - **Endpoint:** `/api/users/logout/<user_id>/<session_id>`
 - **Método:** DELETE
@@ -67,7 +69,7 @@ Retorna:
 }
 ```
 
-## Update
+### Update
 
 - **Endpoint:** `/api/users/update`
 - **Método:** PATCH
@@ -92,3 +94,10 @@ Retorna:
     "message": "User updated successfully!"
 }
 ```
+
+## Fires
+
+### Register
+
+
+

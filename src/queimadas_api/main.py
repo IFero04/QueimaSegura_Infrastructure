@@ -9,6 +9,7 @@ app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
+# USERS
 @app.route('/api/users/register', methods=['POST'])
 def new_user():
     from api.users import new_user
@@ -33,25 +34,14 @@ def update_user():
     data = request.get_json()
     return update_user(data)
      
+#FIRES
+@app.route('/api/fires/register', methods=['POST'])
+def new_fire():
+    from api.fires import new_fire
+    data = request.get_json()
+    return new_fire(data)
 
-def main():
-    from api.users import new_user, login, logout, update_user
 
-    try:
-        data = {
-            'user': {
-                #'id': '0dbf7879-1704-42f8-aec8-2e945a64f601',
-                #'session_id': 'f856d66d-826d-44ba-bf8a-ba972e379bc0',
-                #'full_name': 'Teste',
-                'email': 'af12@gmail.com',
-                'password': 'e10adc3949ba59abbe56e057f20f883e',
-                #'NIF': '223456789',
-            }
-        }
-        result = login(data)
-        print(result)
-    except Exception as e:
-        print('Error: ', e)
 
 if __name__ == '__main__':
     print("Loading DataBase ...")
@@ -60,5 +50,4 @@ if __name__ == '__main__':
         time.sleep(15)
 
     print("DataBase loaded.")
-    main()
-    #app.run(host="0.0.0.0", port=API_PORT)
+    app.run(host="0.0.0.0", port=API_PORT)

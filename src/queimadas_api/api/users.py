@@ -4,7 +4,7 @@ from util.db import PostgresDB
 from const import PG_HOST, PG_PORT, PG_DB_NAME, PG_USER, PG_PASSWORD
 
 
-#GENERAL
+## GENERAL
 def __check_email(email):
     email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
     if not(re.match(email_pattern, email)):
