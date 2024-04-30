@@ -1,0 +1,13 @@
+Perguntas PROF:
+
+- Como fazer para suportar multiplas linguas com dados que vem da base de dados?
+- Se a API precisa do Session_id(recevido no login) para verificar a autenticidade do utlizador, como pode ser feitas alterações localmente para depois serem enviadas para API?
+- Que tipos de dados eu tenho de carregar localmente, municipios, rasoes, tipos?
+- Como seria o sistema do Admin poder adicionar regras?
+- Devo ja iniciar todos os municipios na base de dados?
+
+
+Observações. (fires)
+Agurdar o session_id para fazer a sicronização.
+RESTRIÇÕES POR DISTRITO E DATA DE INICIO E FIM (tabela nova)
+TABELA DE PERMISSÕES PARA OS FOGOS

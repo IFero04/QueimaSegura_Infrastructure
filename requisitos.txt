@@ -1,0 +1,28 @@
+Requisitos Funcionais
+
+Como User/Gestor/Admin
+-Login - email e password
+-Criar Conta - nome, nif, email, password, avatar(opcional)
+-Criar queimada - 1 - NIF, Nome, Tipo, Data, Motivo
+			-Tipo: Amontoados / Extensiva
+			-Motivo: Fitossanária / Sobrantes Agricolas / Sobrantes Florestais / Matos / Outros
+		- 2 - Selecionar localização no mapa ou por código postal
+-Editar info das queimadas
+-Remover queimadas
+
+
+Como Gestor
+- Adicionar municipio ao perfil
+- Filtar queimadas por data no seu municipio
+- Ticket
+
+Como Admin (ICN)
+- Adicionar/Retirar perms aos users(Gestor/Admin)
+- Ver todas as queimadas em Portugal
+- Adicionar regras para tornar queimadas viáveis
+- Aceitar/Recusar Queimadas
+
+Requisitos Não Funcionais
+
+-Após ser selecionado uma localização no mapa, preencher os detalhes da localização
+- Net para API

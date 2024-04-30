@@ -20,7 +20,6 @@ CREATE TABLE public.users (
     password        VARCHAR(32) NOT NULL,
     avatar          VARCHAR(255),
     type            INT NOT NULL DEFAULT 0,
-    permissions     VARCHAR(255)
 );
 
 -- Create the 'fires' table
@@ -28,9 +27,10 @@ CREATE TABLE public.fires (
     id              UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     date            DATE NOT NULL,
     location        VARCHAR(22) NOT NULL,
+    observations    TEXT,
     type_id         INT NOT NULL,
     reason_id       INT NOT NULL,
-    county_id       INT NOT NULL,
+    district_id     INT NOT NULL,
     user_id         UUID NOT NULL REFERENCES public.users(id)
 );
 
@@ -51,29 +51,46 @@ ADD COLUMN status TEXT GENERATED ALWAYS AS (calculate_fire_status(date)) STORED;
 -- Create the 'types' table
 CREATE TABLE public.types (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL
+    name_pt VARCHAR(255) NOT NULL,
+    name_en VARCHAR(255) NOT NULL
 );
 ALTER TABLE public.fires ADD CONSTRAINT fk_type_id FOREIGN KEY (type_id) REFERENCES public.types(id);
-INSERT INTO public.types (name) VALUES ('Florestal'), ('Urbano'), ('Agrícola'), ('Industrial'), ('Outro');
+INSERT INTO public.types (name_pt, name_en) VALUES ('Queima', 'Burning'), ('Queimada', 'Extended Burning');
 
 -- Create the 'reasons' table
 CREATE TABLE public.reasons (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL
+    name_pt VARCHAR(255) NOT NULL,
+    name_en VARCHAR(255) NOT NULL
 );
 ALTER TABLE public.fires ADD CONSTRAINT fk_reason_id FOREIGN KEY (reason_id) REFERENCES public.reasons(id);
-INSERT INTO public.reasons (name) VALUES ('Queima Fitossanitária'), ('Gestão de sobrantes agrícolas'), ('Gestão de sobrantes florestais'), ('Gestão de matos'), ('Outro');
+INSERT INTO public.reasons (name_pt, name_en) 
+VALUES 
+    ('Queima Fitossanitária', 'Phytosanitary Burning'),
+    ('Gestão de sobrantes agrícolas', 'Agricultural Surplus Management'),
+    ('Gestão de sobrantes florestais', 'Forestry Surplus Management'),
+    ('Gestão de matos', 'Brush Management'),
+    ('Outro', 'Other');
 
--- Create the 'counties' table
-CREATE TABLE public.counties (
+-- Create the 'districts' table
+CREATE TABLE public.districts (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL
 );
-ALTER TABLE public.fires ADD CONSTRAINT fk_county_id FOREIGN KEY (county_id) REFERENCES public.counties(id);
+ALTER TABLE public.fires ADD CONSTRAINT fk_district_id FOREIGN KEY (district_id) REFERENCES public.districts(id);
+
+-- Create the 'restrictions' table
+CREATE TABLE public.restrictions (
+    id              UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    start_date      DATE NOT NULL,
+    end_date        DATE NOT NULL,
+    district_id     INT NOT NULL REFERENCES public.districts(id)
+);
 
 -- Grant permissions to the 'api' user
 GRANT SELECT, INSERT, UPDATE ON TABLE public.users TO api;
 GRANT SELECT, INSERT, UPDATE ON TABLE public.fires TO api;
 GRANT SELECT ON TABLE public.types TO api;
 GRANT SELECT ON TABLE public.reasons TO api;
-GRANT SELECT ON TABLE public.counties TO api;
+GRANT SELECT ON TABLE public.districts TO api;
+GRANT SELECT, INSERT, UPDATE ON TABLE public.restrictions TO api;

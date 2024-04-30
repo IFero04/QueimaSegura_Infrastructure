@@ -2,7 +2,7 @@ import time
 from flask import Flask, request
 from flask_cors import CORS
 from util.db import check_db
-from const import API_PORT, PG_HOST, PG_PORT, PG_DB_NAME, PG_USER, PG_PASSWORD
+from queimadas_api.util.const import API_PORT, PG_HOST, PG_PORT, PG_DB_NAME, PG_USER, PG_PASSWORD
 
 
 app = Flask(__name__)

@@ -1,7 +1,7 @@
 import re
 import uuid
 from util.db import PostgresDB
-from const import PG_HOST, PG_PORT, PG_DB_NAME, PG_USER, PG_PASSWORD
+from queimadas_api.util.const import PG_HOST, PG_PORT, PG_DB_NAME, PG_USER, PG_PASSWORD
 
 
 ## GENERAL
