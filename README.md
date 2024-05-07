@@ -4,7 +4,7 @@
 
 ### Register
 
-- **Endpoint:** `/api/users/register`
+- **Endpoint:** `/users/`
 - **Método:** POST
 
 Registro de usuário:
@@ -33,7 +33,7 @@ Retorna:
 
 ### Login
 
-- **Endpoint:** `/api/users/login`
+- **Endpoint:** `/login/`
 - **Método:** POST
 
 Login de usuário:
@@ -60,7 +60,7 @@ Retorna:
 
 ### Logout
 
-- **Endpoint:** `/api/users/logout/<user_id>/<session_id>`
+- **Endpoint:** `/logout/?user_id=c2e6f444-55a6-4e7a-be8c-6640bd378c1a&session_id=3bdbf7a4-d15c-4391-a29c-9f091c6832ad`
 - **Método:** DELETE
 
 Retorna:
@@ -74,21 +74,17 @@ Retorna:
 
 ### Update
 
-- **Endpoint:** `/api/users/update`
-- **Método:** PATCH
+- **Endpoint:** `/users/{user_id}/{session_id}/`
+- **Método:** PUT
 
 Login de usuário:
 
 ```json
 {
-    "user": {
-        "user_id": "user_id", //UUID
-        "session_id": "session" //UUID
-        "full_name": "Teste", //Mais de 3 caracteres
-        "email": "af@gmail.com", //Formato de email
-        "password": "MD5Hash", //Tem de ser uma hash MD5
-        "NIF": "123456789" //validação de NIF
-    }
+    "full_name": "Teste", //Mais de 3 caracteres
+    "email": "af@gmail.com", //Formato de email
+    "password": "MD5Hash", //Tem de ser uma hash MD5
+    "NIF": "123456789" //validação de NIF
 }
 ```
 
