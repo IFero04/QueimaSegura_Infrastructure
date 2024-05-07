@@ -25,9 +25,18 @@ class User(BaseModel):
     password: str
     NIF: str
 
+class LoginCredentials(BaseModel):
+    email: str
+    password: str
+
 @app.post('/users/', status_code=status.HTTP_201_CREATED, tags=['users'])
-def create_user(item: User):
+def create_user(user: User):
     from api.users import create_user
-    return create_user(item)
+    return create_user(user)
+
+@app.post('/login/', status_code=status.HTTP_202_ACCEPTED ,tags=['users'])
+def login(credentials: LoginCredentials):
+    from api.users import login
+    return login(credentials)
 
 

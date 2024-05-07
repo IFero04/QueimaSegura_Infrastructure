@@ -65,23 +65,13 @@ def create_user(user):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
 ## LOGIN
-def _check_login(user):
-    expected_keys = {'email', 'password'}
-    keys = user.keys()
-    missing_keys = expected_keys - set(keys)
+def _check_login(credentials):
+    __check_email(credentials.email)
+    __check_password(credentials.password)
 
-    if keys != expected_keys:
-        raise Exception('Invalid keys')
-    if missing_keys:
-        raise Exception(f'Missing keys: {missing_keys}')
-
-    __check_email(user['email'])
-    __check_password(user['password'])
-
-def login(data):
+def login(credentials):
     try:
-        user = data['user']
-        _check_login(user)
+        _check_login(credentials)
         session = str(uuid.uuid4())
 
         with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
@@ -90,7 +80,7 @@ def login(data):
                 FROM users
                 WHERE email = %s AND password = %s
             """
-            parameters = (user['email'], user['password'], )
+            parameters = (credentials.email, credentials.password, )
             result = db.execute_query(query, parameters, multi=False)
             if not result:  
                 raise Exception('User not found')
@@ -111,13 +101,10 @@ def login(data):
                         'user_id': user_id,
                         'session_id': session
                     }
-                }, 200
+                }
 
     except Exception as e:
-        return {
-            'status': 'ERROR!',
-            'message': str(e)
-        }, 400
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
 
 ## LOGOUT
 def logout(args):
