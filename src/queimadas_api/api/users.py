@@ -107,11 +107,8 @@ def login(credentials):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
 
 ## LOGOUT
-def logout(args):
+def logout(user_id, session_id):
     try:
-        user_id = args['user_id']
-        session_id = args['session_id']
-
         with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
             query = """
                 SELECT session_id
@@ -138,33 +135,20 @@ def logout(args):
                 return {
                     'status': 'OK!',
                     'message': 'User logged out successfully!'
-                }, 200
+                }
 
     except Exception as e:
-        return {
-            'status': 'ERROR!',
-            'message': str(e)
-        }, 400
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
 
 ## UPDATE
 def _check_update_user(user):
-    expected_keys = {'user_id', 'session_id', 'full_name', 'email', 'password', 'NIF'}
-    keys = user.keys()
-    missing_keys = expected_keys - set(keys)
+    __check_full_name(user.full_name)
+    __check_email(user.email)
+    __check_password(user.password)
+    __check_nif(user.NIF)
 
-    if keys != expected_keys:
-        raise Exception('Invalid keys')
-    if missing_keys:
-        raise Exception(f'Missing keys: {missing_keys}')
-
-    __check_full_name(user['full_name'])
-    __check_email(user['email'])
-    __check_password(user['password'])
-    __check_nif(user['NIF'])
-
-def update_user(data):
+def update_user(user_id, session_id, user):
     try:
-        user = data['user']
         _check_update_user(user)
 
         with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
@@ -174,13 +158,13 @@ def update_user(data):
                 WHERE id = %s
             """
 
-            parameters = (user['user_id'], )
+            parameters = (user_id, )
             result = db.execute_query(query, parameters, multi=False)
             if not result:
                 raise Exception('User not found')
             
             if active_session := result[0]:
-                if active_session != user['session_id']:
+                if active_session != session_id:
                     raise Exception('Session_id does not match')
                 
                 query = """
@@ -188,16 +172,13 @@ def update_user(data):
                     SET full_name = %s, email = %s, password = %s, nif = %s
                     WHERE id = %s
                 """
-                parameters = (user['full_name'], user['email'], user['password'], user['NIF'], user['id'], )
+                parameters = (user.full_name, user.email, user.password, user.NIF, user_id, )
                 db.execute_query(query, parameters, fetch=False)
     
                 return {
                     'status': 'OK!',
                     'message': 'User updated successfully!'
-                }, 200
+                }
             
     except Exception as e:
-        return {
-            'status': 'ERROR!',
-            'message': str(e)
-        }, 400
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))

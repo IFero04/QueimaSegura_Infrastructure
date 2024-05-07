@@ -39,4 +39,14 @@ def login(credentials: LoginCredentials):
     from api.users import login
     return login(credentials)
 
+@app.delete('/logout/', status_code=status.HTTP_202_ACCEPTED, tags=['users'])
+def logout(user_id: str, session_id: str):
+    from api.users import logout
+    return logout(user_id, session_id)
+
+@app.put('/users/{user_id}/{session_id}/', status_code=status.HTTP_202_ACCEPTED, tags=['users'])
+def update_user(user_id: str, session_id: str, user: User):
+    from api.users import update_user
+    return update_user(user_id, session_id, user)
+
 
