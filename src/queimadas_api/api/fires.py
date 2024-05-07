@@ -33,7 +33,7 @@ def __check_user(user):
 
 ## REGISTER
 def _check_new_fire(fire):
-    expected_keys = {'type', 'date', 'location', 'reason', 'county'}
+    expected_keys = {'type', 'date', 'location', 'reason', 'district'}
     __check_keys(expected_keys, fire.keys())
 
 def new_fire(data):

@@ -1,7 +1,7 @@
 #!/bin/bash
-if [ "/" = "true" ];
-    then nodemon --legacy-watch --exec python -u main.py $API_PORT $PG_HOST $PG_PORT $PG_DB_NAME $PG_USER $PG_PASSWORD; 
-    else python -u main.py $API_PORT $PG_HOST $PG_PORT $PG_DB_NAME $PG_USER $PG_PASSWORD;
+if [ "$USE_DEV_MODE" = "true" ];
+    then fastapi dev main.py --proxy-headers --port 8000; 
+    else fastapi run main.py --proxy-headers --port 8000;
 fi
 
 echo "Executed script at $(date)"

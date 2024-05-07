@@ -1,4 +1,2 @@
 psycopg2
-flask
-flask-magql
-flask-cors
+fastapi[all]

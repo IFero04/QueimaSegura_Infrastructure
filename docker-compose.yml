@@ -22,6 +22,17 @@ services:
     volumes:
       - ./src/queimadas_api:/usr/src/app
       - ./docker/volumes/data:/data
+    ports:
+      - "8000:8000"
+  migrator:
+    build: docker/images/python
+    container_name: migrator
+    env_file: .env
+    environment:
+      - USE_DEV_MODE=${USE_DEV_MODE}
+    volumes:
+      - ./src/migrator:/usr/src/app
+      - ./docker/volumes/data:/data
 
 volumes:
   postgres_data:
