@@ -1,6 +1,6 @@
 # QUEIMADAS API
 
-## Users 
+## Users
 
 ### Register
 
@@ -8,17 +8,18 @@
 - **Método:** POST
 
 Registro de usuário:
+
 ```json
 {
-    "user": {
-        "full_name": "Teste", //Mais de 3 caracteres
-        "email": "af@gmail.com", //Formato de email
-        "password": "MD5Hash", //Tem de ser uma hash MD5
-        "NIF": "123456789" //validação de NIF
-    }
+    "full_name": "Teste", //Mais de 3 caracteres
+    "email": "af@gmail.com", //Formato de email
+    "password": "MD5Hash", //Tem de ser uma hash MD5
+    "NIF": "123456789" //validação de NIF
 }
 ```
+
 Retorna:
+
 ```json
 {
     "status": "OK!",
@@ -36,15 +37,16 @@ Retorna:
 - **Método:** POST
 
 Login de usuário:
+
 ```json
 {
-    "user": {
-        "email": "af@gmail.com", //formato de email
-        "password": "MD5Hash" //Tem de ser uma hash MD5
-    }
+    "email": "af@gmail.com", //formato de email
+    "password": "MD5Hash" //Tem de ser uma hash MD5
 }
 ```
+
 Retorna:
+
 ```json
 {
     "status": "OK!",
@@ -62,6 +64,7 @@ Retorna:
 - **Método:** DELETE
 
 Retorna:
+
 ```json
 {
     "status": "OK!",
@@ -75,6 +78,7 @@ Retorna:
 - **Método:** PATCH
 
 Login de usuário:
+
 ```json
 {
     "user": {
@@ -87,7 +91,9 @@ Login de usuário:
     }
 }
 ```
+
 Retorna:
+
 ```json
 {
     "status": "OK!",
@@ -98,6 +104,3 @@ Retorna:
 ## Fires
 
 ### Register
-
-
-
