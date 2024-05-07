@@ -50,3 +50,5 @@ def update_user(user_id: str, session_id: str, user: User):
     return update_user(user_id, session_id, user)
 
 
+# FIRES
+
