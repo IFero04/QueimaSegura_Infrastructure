@@ -1,19 +1,10 @@
+from fastapi import HTTPException, status
 from util.db import PostgresDB
-from queimadas_api.util.const import PG_HOST, PG_PORT, PG_DB_NAME, PG_USER, PG_PASSWORD
+from util.config import settings
 
-## GENERAL
-def __check_keys(expected_keys, keys):
-    missing_keys = expected_keys - set(keys)
-    if keys != expected_keys:
-        raise Exception('Invalid keys')
-    if missing_keys:
-        raise Exception(f'Missing keys: {missing_keys}')
-    
+## GENERAL    
 def __check_user(user):
-    expected_keys = {'user_id', 'session_id'}
-    __check_keys(expected_keys, user.keys())
-
-    with PostgresDB(PG_HOST, PG_PORT, PG_DB_NAME, PG_USER, PG_PASSWORD) as db:
+    with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
             query = """
                 SELECT session_id
                 FROM users
@@ -33,8 +24,7 @@ def __check_user(user):
 
 ## REGISTER
 def _check_new_fire(fire):
-    expected_keys = {'type', 'date', 'location', 'reason', 'district'}
-    __check_keys(expected_keys, fire.keys())
+    pass
 
 def new_fire(data):
     user = data['user']
