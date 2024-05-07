@@ -23,7 +23,7 @@ services:
       - ./src/queimadas_api:/usr/src/app
       - ./docker/volumes/data:/data
     ports:
-      - "8000:8000"
+      - "$API_PORT:8000"
   migrator:
     build: docker/images/python
     container_name: migrator
