@@ -1,8 +1,8 @@
 import re
 import uuid
+from fastapi import HTTPException, status
 from util.db import PostgresDB
-from queimadas_api.util.const import PG_HOST, PG_PORT, PG_DB_NAME, PG_USER, PG_PASSWORD
-
+from util.config import settings
 
 ## GENERAL
 def __check_email(email):
@@ -30,33 +30,23 @@ def __check_nif(nif):
 
 ## REGISTER
 def _check_new_user(user):
-    expected_keys = {'full_name', 'email', 'password', 'NIF'}
-    keys = user.keys()
-    missing_keys = expected_keys - set(keys)
+    __check_full_name(user.full_name)
+    __check_email(user.email)
+    __check_password(user.password)
+    __check_nif(user.NIF)
 
-    if keys != expected_keys:
-        raise Exception('Invalid keys')
-    if missing_keys:
-        raise Exception(f'Missing keys: {missing_keys}')
-    
-    __check_full_name(user['full_name'])
-    __check_email(user['email'])
-    __check_password(user['password'])
-    __check_nif(user['NIF'])
-
-def new_user(data):
+def create_user(user):
     try:
-        user = data['user']
         _check_new_user(user)
         session = str(uuid.uuid4())
 
-        with PostgresDB(PG_HOST, PG_PORT, PG_DB_NAME, PG_USER, PG_PASSWORD) as db:
+        with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
             query = """
                 INSERT INTO users(full_name, email, password, nif, session_id)
                 VALUES (%s, %s, %s, %s, %s)
                 RETURNING id
             """
-            parameters = (user['full_name'], user['email'], user['password'], user['NIF'], session, )
+            parameters = (user.full_name, user.email, user.password, user.NIF, session, )
             result = db.execute_query(query, parameters, multi=False)
             if not result:
                 raise Exception('User not created')
@@ -69,13 +59,10 @@ def new_user(data):
                         'user_id': user_id,
                         'session_id': session
                     }
-                }, 201
+                }
 
     except Exception as e:
-        return {
-            'status': 'ERROR!',
-            'message': str(e)
-        }, 400
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
 ## LOGIN
 def _check_login(user):
@@ -97,7 +84,7 @@ def login(data):
         _check_login(user)
         session = str(uuid.uuid4())
 
-        with PostgresDB(PG_HOST, PG_PORT, PG_DB_NAME, PG_USER, PG_PASSWORD) as db:
+        with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
             query = """
                 SELECT id
                 FROM users
@@ -138,7 +125,7 @@ def logout(args):
         user_id = args['user_id']
         session_id = args['session_id']
 
-        with PostgresDB(PG_HOST, PG_PORT, PG_DB_NAME, PG_USER, PG_PASSWORD) as db:
+        with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
             query = """
                 SELECT session_id
                 FROM users
@@ -193,7 +180,7 @@ def update_user(data):
         user = data['user']
         _check_update_user(user)
 
-        with PostgresDB(PG_HOST, PG_PORT, PG_DB_NAME, PG_USER, PG_PASSWORD) as db:
+        with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
             query = """
                 SELECT session_id
                 FROM users

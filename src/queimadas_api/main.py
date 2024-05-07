@@ -1,8 +1,9 @@
+import time
 from typing import Union
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, status
+from pydantic import BaseModel
 from util.db import check_db
 from util.config import settings
-import time
 
 print("Loading DataBase ...")
 while not check_db(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password):
@@ -17,6 +18,16 @@ app = FastAPI()
 def read_root():
     return {"Hello": settings.app_name}
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+# USERS
+class User(BaseModel):
+    full_name: str
+    email: str
+    password: str
+    NIF: str
+
+@app.post('/users/', status_code=status.HTTP_201_CREATED, tags=['users'])
+def create_user(item: User):
+    from api.users import create_user
+    return create_user(item)
+
+
