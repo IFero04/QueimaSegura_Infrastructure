@@ -49,6 +49,11 @@ def update_user(user_id: str, session_id: str, user: User):
     from api.users import update_user
     return update_user(user_id, session_id, user)
 
+# LOCATION
+@app.get('/location/', tags=['location'])
+def get_location(zipcode: str):
+    from api.location import get_location
+    return get_location(zipcode)
 
 # FIRES
 
