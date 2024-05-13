@@ -21,4 +21,4 @@ if __name__ == '__main__':
         time.sleep(15)
 
     print("DataBase loaded.")
-    main()
+    check_zipcodes()

@@ -15,7 +15,7 @@ services:
       retries: 30
   api:
     build: docker/images/python
-    container_name: api
+    container_name: queimadas-api
     env_file: .env
     environment:
       - USE_DEV_MODE=${USE_DEV_MODE}
@@ -26,7 +26,7 @@ services:
       - "$API_PORT:8000"
   migrator:
     build: docker/images/python
-    container_name: migrator
+    container_name: queimadas-migrator
     env_file: .env
     environment:
       - USE_DEV_MODE=${USE_DEV_MODE}

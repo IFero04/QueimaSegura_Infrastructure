@@ -48,9 +48,6 @@ def migrate_zipcode():
 
     try:
         with PostgresDB(PG_HOST, PG_PORT, PG_DB_NAME, PG_USER, PG_PASSWORD) as db:
-            query_check = """
-                SELECT id FROM zip_codes WHERE zip_code = %s
-            """
             query_get_fk = """
                 SELECT id FROM counties WHERE code = %s AND district_id = %s
             """
@@ -70,10 +67,6 @@ def migrate_zipcode():
             size = len(zipcodes)
             for i, zipcode in enumerate(zipcodes):
                 print(f"[{i}/{size}] - {zipcode}")
-                parameters_check = (zipcode["zip_code"], )
-                existing_zipcode = db.execute_query(query_check, parameters_check, multi=False)
-                if existing_zipcode:
-                    continue
                 parameters_get_fk = (zipcode["CC"], zipcode["DD"], )
                 fk = db.execute_query(query_get_fk, parameters_get_fk, multi=False)
                 if not fk:
@@ -92,7 +85,6 @@ def migrate_zipcode():
                 result = db.execute_query(query_insert, parameters_insert, multi=False)
                 if not result:
                     raise Exception('ZIPCODE not created')
-                    
                     
         print('Zipcodes migrated successfully!')
         return True
