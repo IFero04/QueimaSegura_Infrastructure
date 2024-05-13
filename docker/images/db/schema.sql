@@ -72,20 +72,29 @@ INSERT INTO public.reasons (name_pt, name_en) VALUES
 -- Create the 'districts' table
 CREATE TABLE public.districts (
     id INT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL
+    name TEXT NOT NULL UNIQUE
 );
 
 -- Create the 'counties' table
 CREATE TABLE public.counties (
-    id INT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    district_id INT NOT NULL REFERENCES public.districts(id)
+    id SERIAL PRIMARY KEY,
+    code INT NOT NULL,
+    district_id INT REFERENCES public.districts(id) NOT NULL,
+    name TEXT NOT NULL UNIQUE,
+    UNIQUE (code, district_id)
 );
 
 -- Create the 'zip_codes' table
 CREATE TABLE public.zip_codes (
-    id VARCHAR(8) PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
+    id SERIAL PRIMARY KEY,
+    location_code INT NOT NULL,
+    location_name TEXT NOT NULL,
+    ART_code INT,
+    ART_name TEXT,
+    tronco TEXT,
+    client TEXT,
+    zip_code VARCHAR(8) NOT NULL,
+    zip_name TEXT NOT NULL,
     county_id INT NOT NULL REFERENCES public.counties(id)
 );
 

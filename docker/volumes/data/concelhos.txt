@@ -7,7 +7,7 @@
 03;06;Esposende
 04;06;Miranda do Douro
 05;06;Oleiros
-06;06;GÛis
+06;06;G√≥is
 07;06;Montemor-o-Novo
 08;06;Lagoa (Algarve)
 09;06;Gouveia
@@ -27,122 +27,122 @@
 03;07;Fafe
 04;07;Mirandela
 05;07;Penamacor
-06;07;Lous„
+06;07;Lous√£
 07;07;Mora
 08;07;Lagos
 09;07;Guarda
-10;07;Castanheira de PÍra
+10;07;Castanheira de P√™ra
 11;07;Loures
 12;07;Elvas
 13;07;Marco de Canaveses
 14;07;Chamusca
 15;07;Montijo
 16;07;Ponte de Lima
-17;07;MurÁa
+17;07;Mur√ßa
 18;07;Moimenta da Beira
 31;07;Ribeira Brava
 01;08;Estarreja
 02;08;Ferreira do Alentejo
-03;08;Guimar„es
+03;08;Guimar√£es
 04;08;Mogadouro
-05;08;ProenÁa-a-Nova
+05;08;Proen√ßa-a-Nova
 06;08;Mira
-07;08;Mour„o
-08;08;LoulÈ
+07;08;Mour√£o
+08;08;Loul√©
 09;08;Manteigas
-10;08;FigueirÛ dos Vinhos
-11;08;Lourinh„
+10;08;Figueir√≥ dos Vinhos
+11;08;Lourinh√£
 12;08;Fronteira
 13;08;Matosinhos
-14;08;Const‚ncia
+14;08;Const√¢ncia
 15;08;Palmela
-16;08;ValenÁa
-17;08;Peso da RÈgua
-18;08;Mort·gua
+16;08;Valen√ßa
+17;08;Peso da R√©gua
+18;08;Mort√°gua
 31;08;Santa Cruz
 01;09;Santa Maria da Feira
-02;09;MÈrtola
-03;09;PÛvoa de Lanhoso
+02;09;M√©rtola
+03;09;P√≥voa de Lanhoso
 04;09;Torre de Moncorvo
-05;09;Sert„
+05;09;Sert√£
 06;09;Miranda do Corvo
 07;09;Portel
 08;09;Monchique
-09;09;MÍda
+09;09;M√™da
 10;09;Leiria
 11;09;Mafra
-12;09;Gavi„o
-13;09;PaÁos de Ferreira
+12;09;Gavi√£o
+13;09;Pa√ßos de Ferreira
 14;09;Coruche
-15;09;Santiago do CacÈm
+15;09;Santiago do Cac√©m
 16;09;Viana do Castelo
 17;09;Ribeira de Pena
 18;09;Nelas
 31;09;Santana
-01;10;Õlhavo
+01;10;√çlhavo
 02;10;Moura
 03;10;Terras de Bouro
 04;10;Vila Flor
 05;10;Vila de Rei
 06;10;Montemor-o-Velho
 07;10;Redondo
-08;10;Olh„o
+08;10;Olh√£o
 09;10;Pinhel
 10;10;Marinha Grande
 11;10;Oeiras
-12;10;Marv„o
+12;10;Marv√£o
 13;10;Paredes
 14;10;Entroncamento
 15;10;Seixal
 16;10;Vila Nova de Cerveira
 17;10;Sabrosa
 18;10;Oliveira de Frades
-31;10;S„o Vicente
+31;10;S√£o Vicente
 01;11;Mealhada
 02;11;Odemira
 03;11;Vieira do Minho
 04;11;Vimioso
-05;11;Vila Velha de RÛd„o
+05;11;Vila Velha de R√≥d√£o
 06;11;Oliveira do Hospital
 07;11;Reguengos de Monsaraz
-08;11;Portim„o
+08;11;Portim√£o
 09;11;Sabugal
-10;11;NazarÈ
+10;11;Nazar√©
 11;11;Sintra
 12;11;Monforte
 13;11;Penafiel
-14;11;Ferreira do ZÍzere
+14;11;Ferreira do Z√™zere
 15;11;Sesimbra
-17;11;Santa Marta de Penagui„o
+17;11;Santa Marta de Penagui√£o
 18;11;Penalva do Castelo
 01;12;Murtosa
 02;12;Ourique
-03;12;Vila Nova de Famalic„o
+03;12;Vila Nova de Famalic√£o
 04;12;Vinhais
 06;12;Pampilhosa da Serra
 07;12;Vendas Novas
-08;12;S„o Br·s de Alportel
+08;12;S√£o Br√°s de Alportel
 09;12;Seia
-10;12;”bidos
-11;12;Sobral de Monte AgraÁo
+10;12;√ìbidos
+11;12;Sobral de Monte Agra√ßo
 12;12;Nisa
 13;12;Porto
-14;12;Goleg„
-15;12;Set˙bal
-17;12;ValpaÁos
+14;12;Goleg√£
+15;12;Set√∫bal
+17;12;Valpa√ßos
 18;12;Penedono
-01;13;Oliveira de AzemÈis
+01;13;Oliveira de Azem√©is
 02;13;Serpa
 03;13;Vila Verde
 06;13;Penacova
 07;13;Viana do Alentejo
 08;13;Silves
 09;13;Trancoso
-10;13;PedrÛg„o Grande
+10;13;Pedr√≥g√£o Grande
 11;13;Torres Vedras
 12;13;Ponte de Sor
-13;13;PÛvoa de Varzim
-14;13;MaÁ„o
+13;13;P√≥voa de Varzim
+14;13;Ma√ß√£o
 15;13;Sines
 17;13;Vila Pouca de Aguiar
 18;13;Resende
@@ -150,16 +150,16 @@
 02;14;Vidigueira
 03;14;Vizela
 06;14;Penela
-07;14;Vila ViÁosa
+07;14;Vila Vi√ßosa
 08;14;Tavira
-09;14;Vila Nova de Foz CÙa
+09;14;Vila Nova de Foz C√¥a
 10;14;Peniche
 11;14;Vila Franca de Xira
 12;14;Portalegre
 13;14;Santo Tirso
 14;14;Rio Maior
 17;14;Vila Real
-18;14;Santa Comba D„o
+18;14;Santa Comba D√£o
 01;15;Ovar
 06;15;Soure
 08;15;Vila do Bispo
@@ -168,113 +168,113 @@
 12;15;Sousel
 13;15;Valongo
 14;15;Salvaterra de Magos
-18;15;S„o Jo„o da Pesqueira
-01;16;S„o Jo„o da Madeira
-06;16;T·bua
-08;16;Vila Real de Santo AntÛnio
-10;16;Porto de MÛs
+18;15;S√£o Jo√£o da Pesqueira
+01;16;S√£o Jo√£o da Madeira
+06;16;T√°bua
+08;16;Vila Real de Santo Ant√≥nio
+10;16;Porto de M√≥s
 11;16;Odivelas
 13;16;Vila do Conde
-14;16;SantarÈm
-18;16;S„o Pedro do Sul
+14;16;Santar√©m
+18;16;S√£o Pedro do Sul
 01;17;Sever do Vouga
 06;17;Vila Nova de Poiares
 13;17;Vila Nova de Gaia
 14;17;Sardoal
-18;17;S·t„o
+18;17;S√°t√£o
 01;18;Vagos
 13;18;Trofa
 14;18;Tomar
 18;18;Sernancelhe
 01;19;Vale de Cambra
 14;19;Torres Novas
-18;19;TabuaÁo
+18;19;Tabua√ßo
 14;20;Vila Nova da Barquinha
 18;20;Tarouca
-14;21;OurÈm
+14;21;Our√©m
 18;21;Tondela
 18;22;Vila Nova de Paiva
 18;23;Viseu
 18;24;Vouzela
-01;01;¡gueda
+01;01;√Ågueda
 02;01;Aljustrel
 03;01;Amares
-04;01;Alf‚ndega da FÈ
+04;01;Alf√¢ndega da F√©
 05;01;Belmonte
 06;01;Arganil
 07;01;Alandroal
 08;01;Albufeira
 09;01;Aguiar da Beira
-10;01;AlcobaÁa
+10;01;Alcoba√ßa
 11;01;Alenquer
-12;01;Alter do Ch„o
+12;01;Alter do Ch√£o
 13;01;Amarante
 14;01;Abrantes
-15;01;Alc·cer do Sal
+15;01;Alc√°cer do Sal
 16;01;Arcos de Valdevez
-17;01;AlijÛ
+17;01;Alij√≥
 18;01;Armamar
 31;01;Calheta (Madeira)
 32;01;Porto Santo
 41;01;Vila do Porto
-42;01;Lagoa (S„o Miguel)
-43;01;Angra do HeroÌsmo
+42;01;Lagoa (S√£o Miguel)
+43;01;Angra do Hero√≠smo
 44;01;Santa Cruz da Graciosa
-45;01;Calheta (S„o Jorge)
+45;01;Calheta (S√£o Jorge)
 46;01;Lajes do Pico
 47;01;Horta
 48;01;Lajes das Flores
 49;01;Corvo
 01;02;Albergaria-a-Velha
-02;02;AlmodÙvar
+02;02;Almod√¥var
 03;02;Barcelos
-04;02;BraganÁa
+04;02;Bragan√ßa
 05;02;Castelo Branco
 06;02;Cantanhede
 07;02;Arraiolos
 08;02;Alcoutim
 09;02;Almeida
-10;02;Alvai·zere
+10;02;Alvai√°zere
 11;02;Arruda dos Vinhos
 12;02;Arronches
-13;02;Bai„o
+13;02;Bai√£o
 14;02;Alcanena
 15;02;Alcochete
 16;02;Caminha
 17;02;Boticas
 18;02;Carregal do Sal
-31;02;C‚mara de Lobos
+31;02;C√¢mara de Lobos
 42;02;Nordeste
-43;02;Praia da VitÛria
+43;02;Praia da Vit√≥ria
 45;02;Velas
 46;02;Madalena
 48;02;Santa Cruz das Flores
 01;03;Anadia
 02;03;Alvito
 03;03;Braga
-04;03;Carrazeda de Ansi„es
-05;03;Covilh„
+04;03;Carrazeda de Ansi√£es
+05;03;Covilh√£
 06;03;Coimbra
 07;03;Borba
 08;03;Aljezur
 09;03;Celorico da Beira
-10;03;Ansi„o
+10;03;Ansi√£o
 11;03;Azambuja
 12;03;Avis
 13;03;Felgueiras
 14;03;Almeirim
 15;03;Almada
-16;03;MelgaÁo
+16;03;Melga√ßo
 17;03;Chaves
 18;03;Castro Daire
 31;03;Funchal
 42;03;Ponta Delgada
-46;03;S„o Roque do Pico
+46;03;S√£o Roque do Pico
 01;04;Arouca
 02;04;Barrancos
 03;04;Cabeceiras de Basto
-04;04;Freixo de Espada ‡ Cinta
-05;04;Fund„o
+04;04;Freixo de Espada √† Cinta
+05;04;Fund√£o
 06;04;Condeixa-a-Nova
 07;04;Estremoz
 08;04;Castro Marim
@@ -283,20 +283,20 @@
 11;04;Cadaval
 12;04;Campo Maior
 13;04;Gondomar
-14;04;AlpiarÁa
+14;04;Alpiar√ßa
 15;04;Barreiro
-16;04;MonÁ„o
-17;04;Mes„o Frio
-18;04;Cinf„es
+16;04;Mon√ß√£o
+17;04;Mes√£o Frio
+18;04;Cinf√£es
 31;04;Machico
-42;04;PovoaÁ„o
+42;04;Povoa√ß√£o
 01;05;Aveiro
 02;05;Beja
 03;05;Celorico de Basto
 04;05;Macedo de Cavaleiros
 05;05;Idanha-a-Nova
 06;05;Figueira da Foz
-07;05;…vora
+07;05;√âvora
 08;05;Faro
 09;05;Fornos de Algodres
 10;05;Bombarral
@@ -304,5 +304,5 @@
 12;05;Castelo de Vide
 13;05;Lousada
 14;05;Benavente
-15;05;Gr‚ndola
+15;05;Gr√¢ndola
 16;05;Paredes de Coura
