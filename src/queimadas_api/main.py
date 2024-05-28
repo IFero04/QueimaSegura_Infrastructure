@@ -50,10 +50,10 @@ def update_user(user_id: str, session_id: str, user: User):
     return update_user(user_id, session_id, user)
 
 # LOCATION
-@app.get('/location/', tags=['location'])
-def get_location(zipcode: str):
+@app.get('/location/', status_code=status.HTTP_202_ACCEPTED, tags=['location'])
+def get_location(search: str):
     from api.location import get_location
-    return get_location(zipcode)
+    return get_location(search)
 
 # FIRES
 
