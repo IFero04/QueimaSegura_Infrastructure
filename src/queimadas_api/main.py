@@ -1,9 +1,12 @@
 import time
+import nltk
 from typing import Union
 from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel
 from util.db import check_db
 from util.config import settings
+
+nltk.download('stopwords')
 
 print("Loading DataBase ...")
 while not check_db(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password):
@@ -52,8 +55,8 @@ def update_user(user_id: str, session_id: str, user: User):
 # LOCATION
 @app.get('/location/', status_code=status.HTTP_202_ACCEPTED, tags=['location'])
 def get_location(search: str):
-    from api.location import get_location
-    return get_location(search)
+    from api.location import handle_location_response
+    return handle_location_response(search)
 
 # FIRES
 
