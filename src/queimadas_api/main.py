@@ -17,9 +17,9 @@ print("DataBase loaded.")
 app = FastAPI()
 
 
-@app.get("/")
+@app.get("/", status_code=status.HTTP_200_OK, tags=['root'])
 def read_root():
-    return {"Hello": settings.app_name}
+    return {"apiName": settings.app_name}
 
 # USERS
 class User(BaseModel):
