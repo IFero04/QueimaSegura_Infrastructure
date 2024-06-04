@@ -23,10 +23,10 @@ def read_root():
 
 # USERS
 class User(BaseModel):
-    full_name: str
+    fullName: str
     email: str
     password: str
-    NIF: str
+    nif: str
 
 class LoginCredentials(BaseModel):
     email: str

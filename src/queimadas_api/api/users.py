@@ -30,10 +30,10 @@ def __check_nif(nif):
 
 ## REGISTER
 def _check_new_user(user):
-    __check_full_name(user.full_name)
+    __check_full_name(user.fullName)
     __check_email(user.email)
     __check_password(user.password)
-    __check_nif(user.NIF)
+    __check_nif(user.nif)
 
 def create_user(user):
     try:
@@ -46,7 +46,7 @@ def create_user(user):
                 VALUES (%s, %s, %s, %s, %s)
                 RETURNING id
             """
-            parameters = (user.full_name, user.email, user.password, user.NIF, session, )
+            parameters = (user.fullName, user.email, user.password, user.nif, session, )
             result = db.execute_query(query, parameters, multi=False)
             if not result:
                 raise Exception('User not created')
@@ -142,10 +142,10 @@ def logout(user_id, session_id):
 
 ## UPDATE
 def _check_update_user(user):
-    __check_full_name(user.full_name)
+    __check_full_name(user.fullName)
     __check_email(user.email)
     __check_password(user.password)
-    __check_nif(user.NIF)
+    __check_nif(user.nif)
 
 def update_user(user_id, session_id, user):
     try:
@@ -172,7 +172,7 @@ def update_user(user_id, session_id, user):
                     SET full_name = %s, email = %s, password = %s, nif = %s
                     WHERE id = %s
                 """
-                parameters = (user.full_name, user.email, user.password, user.NIF, user_id, )
+                parameters = (user.fullName, user.email, user.password, user.nif, user_id, )
                 db.execute_query(query, parameters, fetch=False)
     
                 return {
