@@ -136,10 +136,10 @@ def login(credentials):
                 }
 
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail={
-                'status': 'ERROR',
-                'message': str(e)
-            })
+        return {
+            'status': 'ERROR!',
+            'message': str(e)
+        }
 
 ## LOGOUT
 def logout(user_id, session_id):
