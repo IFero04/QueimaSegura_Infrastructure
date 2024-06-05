@@ -23,14 +23,20 @@ def read_root():
 
 # USERS
 class User(BaseModel):
-    full_name: str
+    fullName: str
     email: str
     password: str
-    NIF: str
+    nif: str
 
 class LoginCredentials(BaseModel):
     email: str
     password: str
+
+## TEMP 
+@app.get('/users/', status_code=status.HTTP_200_OK, tags=['users'])
+def get_users():
+    from api.users import get_users
+    return get_users()
 
 @app.post('/users/', status_code=status.HTTP_201_CREATED, tags=['users'])
 def create_user(user: User):
