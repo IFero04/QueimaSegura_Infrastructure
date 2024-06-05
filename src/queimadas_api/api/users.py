@@ -4,38 +4,6 @@ from fastapi import HTTPException, status
 from util.db import PostgresDB
 from util.config import settings
 
-def get_users():
-    try:
-        with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
-            query = """
-                SELECT id, session_id, full_name, email, nif, password, type
-                FROM users
-            """
-            result = db.execute_query(query, fetch=True)
-            if not result:
-                raise Exception('No users found')
-            
-            users = []
-            for user in result:
-                users.append({
-                    'user_id': user[0],
-                    'session_id': user[1],
-                    'full_name': user[2],
-                    'email': user[3],
-                    'nif': user[4],
-                    'password': user[5],
-                    'type': int(user[6])
-                })
-
-            return {
-                'status': 'OK!',
-                'message': 'Users found successfully!',
-                'result': users
-            }
-
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
-
 ## GENERAL
 def __check_email(email):
     email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
@@ -62,10 +30,10 @@ def __check_nif(nif):
 
 ## REGISTER
 def _check_new_user(user):
-    __check_full_name(user.fullName)
+    __check_full_name(user.full_name)
     __check_email(user.email)
     __check_password(user.password)
-    __check_nif(user.nif)
+    __check_nif(user.NIF)
 
 def create_user(user):
     try:
@@ -78,7 +46,7 @@ def create_user(user):
                 VALUES (%s, %s, %s, %s, %s)
                 RETURNING id
             """
-            parameters = (user.fullName, user.email, user.password, user.nif, session, )
+            parameters = (user.full_name, user.email, user.password, user.NIF, session, )
             result = db.execute_query(query, parameters, multi=False)
             if not result:
                 raise Exception('User not created')
@@ -136,10 +104,7 @@ def login(credentials):
                 }
 
     except Exception as e:
-        return {
-            'status': 'ERROR!',
-            'message': str(e)
-        }
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
 
 ## LOGOUT
 def logout(user_id, session_id):
@@ -177,10 +142,10 @@ def logout(user_id, session_id):
 
 ## UPDATE
 def _check_update_user(user):
-    __check_full_name(user.fullName)
+    __check_full_name(user.full_name)
     __check_email(user.email)
     __check_password(user.password)
-    __check_nif(user.nif)
+    __check_nif(user.NIF)
 
 def update_user(user_id, session_id, user):
     try:
@@ -207,7 +172,7 @@ def update_user(user_id, session_id, user):
                     SET full_name = %s, email = %s, password = %s, nif = %s
                     WHERE id = %s
                 """
-                parameters = (user.fullName, user.email, user.password, user.nif, user_id, )
+                parameters = (user.full_name, user.email, user.password, user.NIF, user_id, )
                 db.execute_query(query, parameters, fetch=False)
     
                 return {
