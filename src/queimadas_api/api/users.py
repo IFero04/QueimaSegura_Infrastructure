@@ -104,11 +104,10 @@ def _check_login(credentials):
 def login(credentials):
     try:
         _check_login(credentials)
-        session = str(uuid.uuid4())
 
         with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
             query = """
-                SELECT id, password
+                SELECT id, full_name, nif, password, avatar, type
                 FROM users
                 WHERE email = %s
             """
@@ -116,26 +115,33 @@ def login(credentials):
             result = db.execute_query(query, parameters, multi=False)
             if not result:  
                 raise Exception('User not found')
-            if result[1] != credentials.password:
+            user_id, full_name, nif, password, avatar, user_type = result
+            if password != credentials.password:
                 raise Exception('Invalid password')
+            
+            session = str(uuid.uuid4())
 
-            if user_id := result[0]:
-                query = """
-                    UPDATE users
-                    SET session_id = %s
-                    WHERE id = %s
-                """
-                parameters = (session, user_id, )
-                db.execute_query(query, parameters, fetch=False)
+            query = """
+                UPDATE users
+                SET session_id = %s
+                WHERE id = %s
+            """
+            parameters = (session, user_id, )
+            db.execute_query(query, parameters, fetch=False)
 
-                return {
-                    'status': 'OK!',
-                    'message': 'User logged in successfully!',
-                    'result': {
-                        'user_id': user_id,
-                        'session_id': session
+            return {
+                'status': 'OK!',
+                'message': 'User logged in successfully!',
+                'result': {
+                    'sessionId': session,
+                    'user': {
+                        'id': user_id,
+                        'fullName': full_name,
+                        'nif': int(nif),
+                        'type': int(user_type),
                     }
                 }
+            }
 
     except Exception as e:
        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
