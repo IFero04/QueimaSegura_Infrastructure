@@ -108,14 +108,16 @@ def login(credentials):
 
         with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
             query = """
-                SELECT id
+                SELECT id, password
                 FROM users
-                WHERE email = %s AND password = %s
+                WHERE email = %s
             """
-            parameters = (credentials.email, credentials.password, )
+            parameters = (credentials.email, )
             result = db.execute_query(query, parameters, multi=False)
             if not result:  
                 raise Exception('User not found')
+            if result[1] != credentials.password:
+                raise Exception('Invalid password')
 
             if user_id := result[0]:
                 query = """
