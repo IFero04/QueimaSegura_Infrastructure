@@ -72,6 +72,7 @@ def valid_email(email):
             """
             parameters = (email, )
             result = db.execute_query(query, parameters, multi=False)
+            print(result)
             if result:
                 raise Exception('Email already exists')
 
