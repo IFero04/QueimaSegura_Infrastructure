@@ -60,6 +60,36 @@ def __check_nif(nif):
     if nif[0] in ('4','7'):
         raise Exception('Invalid NIF')
 
+def valid_email(email):
+    try:
+        __check_email(email)
+
+        with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
+            query = """
+                SELECT email
+                FROM users
+                WHERE email = %s
+            """
+            parameters = (email, )
+            result = db.execute_query(query, parameters, multi=False)
+            if result:
+                raise Exception('Email already exists')
+
+            return {
+                'status': 'OK!',
+                'message': 'Email is valid!'
+            }
+        
+    except Exception as e:
+        errorMsg = str(e)
+        if 'duplicate key value violates unique constraint' in errorMsg:
+            if 'email' in errorMsg:
+                raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='Email already exists')
+            if 'nif' in errorMsg:
+                raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='NIF already exists')
+        
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=errorMsg)
+
 ## REGISTER
 def _check_new_user(user):
     __check_full_name(user.fullName)

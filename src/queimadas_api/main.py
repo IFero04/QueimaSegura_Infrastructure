@@ -38,6 +38,11 @@ def get_users():
     from api.users import get_users
     return get_users()
 
+@app.post('/users/check_email/', status_code=status.HTTP_200_OK, tags=['users'])
+def check_email(email: str):
+    from api.users import valid_email
+    return valid_email(email)
+
 @app.post('/users/', status_code=status.HTTP_201_CREATED, tags=['users'])
 def create_user(user: User):
     from api.users import create_user
