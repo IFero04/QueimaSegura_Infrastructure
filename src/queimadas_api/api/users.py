@@ -88,8 +88,8 @@ def create_user(user):
                     'status': 'OK!',
                     'message': 'User created successfully!',
                     'result': {
-                        'user_id': user_id,
-                        'session_id': session
+                        'userId': user_id,
+                        'sessionId': session
                     }
                 }
 
