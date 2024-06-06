@@ -95,10 +95,11 @@ def create_user(user):
 
     except Exception as e:
         errorMsg = str(e)
-        print(' ERROR')
-        print(e)
-        print(' MSG')
-        print(errorMsg)
+        if 'duplicate key value violates unique constraint' in errorMsg:
+            if 'email' in errorMsg:
+                raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='Email already exists')
+            if 'nif' in errorMsg:
+                raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='NIF already exists')
         
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=errorMsg)
 
