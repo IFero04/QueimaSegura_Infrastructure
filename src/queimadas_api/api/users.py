@@ -94,9 +94,8 @@ def create_user(user):
                 }
 
     except Exception as e:
-        print('ERROR')
-        print(e)
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+        errorMsg = str(e.split('\n')[0])
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=errorMsg)
 
 ## LOGIN
 def _check_login(credentials):
