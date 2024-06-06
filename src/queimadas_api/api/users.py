@@ -62,7 +62,6 @@ def __check_nif(nif):
 
 def valid_email(email):
     try:
-        print(email)
         __check_email(email)
 
         with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
@@ -73,7 +72,6 @@ def valid_email(email):
             """
             parameters = (email, )
             result = db.execute_query(query, parameters, multi=False)
-            print(result)
             if result:
                 raise Exception('Email already exists')
 
