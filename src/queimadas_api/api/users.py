@@ -81,14 +81,7 @@ def valid_email(email):
             }
         
     except Exception as e:
-        errorMsg = str(e)
-        if 'duplicate key value violates unique constraint' in errorMsg:
-            if 'email' in errorMsg:
-                raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='Email already exists')
-            if 'nif' in errorMsg:
-                raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='NIF already exists')
-        
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=errorMsg)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
 ## REGISTER
 def _check_new_user(user):
