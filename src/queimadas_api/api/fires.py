@@ -70,6 +70,43 @@ def create_fire(user_id, session_id, fire):
     try:
         __check_user(user_id, session_id)
         __check_new_fire(fire)
+    
+        with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
+            query = """
+                INSERT INTO fires (date, type_id, reason_id, zip_code_id, user_id)
+                VALUES (%s, %s, %s, %s, %s)
+                RETURNING id
+            """
+
+            parameters = (fire.date, fire.typeId, fire.reasonId, fire.zipCodeId, user_id)
+            result = db.execute_query(query, parameters, multi=False)
+            if not result:
+                raise Exception('Fire not created')
+            
+            if fire_id := result[0]:
+                if fire.location:
+                    query = f"""
+                        UPDATE fires(location)
+                        VALUES (%s)
+                        WHERE id = {fire_id}
+                    """
+                    parameters = (fire.location)
+                    db.execute_query(query, parameters, fetch=False)
+                if fire.observations:
+                    query = f"""
+                        UPDATE fires(observations)
+                        VALUES (%s)
+                        WHERE id = {fire_id}
+                    """
+                    parameters = (fire.observations)
+                    db.execute_query(query, parameters, fetch=False)
+                return {
+                    'status': 'OK!',
+                    'message': 'Fire created successfully!',
+                    'result': {
+                        'fireId': fire_id
+                    }
+                }
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 

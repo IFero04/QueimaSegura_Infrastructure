@@ -72,11 +72,11 @@ def get_location(search: str):
 # FIRES
 class Fire(BaseModel):
     date: str
-    location: Union[str, None] = None
-    observations: Union[str, None] = None
     typeId: int
     reasonId: int
     zipCodeId: int
+    location: Union[str, None] = None
+    observations: Union[str, None] = None
 
 @app.post('/fires/{user_id}/{session_id}/', status_code=status.HTTP_201_CREATED, tags=['fires'])
 def new_fire(user_id: str, session_id: str, fire: Fire):
