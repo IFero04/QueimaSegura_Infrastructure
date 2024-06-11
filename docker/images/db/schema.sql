@@ -33,30 +33,6 @@ CREATE TABLE public.users (
     type            INT NOT NULL DEFAULT 0
 );
 
--- Create the 'fires' table
-CREATE TABLE public.fires (
-    id              UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-    date            DATE NOT NULL,
-    location        VARCHAR(22),
-    observations    TEXT,
-    type_id         INT NOT NULL,
-    reason_id       INT NOT NULL,
-    zip_code_id     INT NOT NULL REFERENCES public.zip_codes(id),
-    user_id         UUID NOT NULL REFERENCES public.users(id),
-    status          TEXT GENERATED ALWAYS AS (calculate_fire_status(date)) STORED
-);
-
-CREATE TABLE public.permissions (
-    id                  UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-    fire_id             UUID NOT NULL REFERENCES public.fires(id),
-    icn_permited        BOOLEAN NOT NULL DEFAULT TRUE,
-    icn_reason          TEXT,
-    icn_user_id         UUID REFERENCES public.users(id),
-    gestor_permited     BOOLEAN NOT NULL DEFAULT TRUE,
-    gestor_reason       TEXT,
-    gestor_user_id      UUID REFERENCES public.users(id),
-);
-
 -- Create the 'types' table
 CREATE TABLE public.types (
     id SERIAL PRIMARY KEY,
@@ -117,9 +93,34 @@ CREATE TABLE public.restrictions (
     district_id     INT NOT NULL REFERENCES public.districts(id)
 );
 
+-- Create the 'fires' table
+CREATE TABLE public.fires (
+    id              UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    date            DATE NOT NULL,
+    location        VARCHAR(22),
+    observations    TEXT,
+    type_id         INT NOT NULL REFERENCES public.types(id),
+    reason_id       INT NOT NULL REFERENCES public.reasons(id),
+    zip_code_id     INT NOT NULL REFERENCES public.zip_codes(id),
+    user_id         UUID NOT NULL REFERENCES public.users(id),
+    status          TEXT GENERATED ALWAYS AS (calculate_fire_status(date)) STORED
+);
+
+CREATE TABLE public.permissions (
+    id                  UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    fire_id             UUID NOT NULL REFERENCES public.fires(id),
+    icn_permited        BOOLEAN NOT NULL DEFAULT TRUE,
+    icn_reason          TEXT,
+    icn_user_id         UUID REFERENCES public.users(id),
+    gestor_permited     BOOLEAN NOT NULL DEFAULT TRUE,
+    gestor_reason       TEXT,
+    gestor_user_id      UUID REFERENCES public.users(id),
+);
+
 -- Grant permissions to the 'api' user
 GRANT SELECT, INSERT, UPDATE ON TABLE public.users TO api;
 GRANT SELECT, INSERT, UPDATE ON TABLE public.fires TO api;
+GRANT SELECT, INSERT, UPDATE ON TABLE public.permissions TO api;
 GRANT SELECT ON TABLE public.types TO api;
 GRANT SELECT ON TABLE public.reasons TO api;
 GRANT SELECT ON TABLE public.districts TO api;
