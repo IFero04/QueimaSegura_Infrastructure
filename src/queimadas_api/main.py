@@ -76,7 +76,7 @@ class Fire(BaseModel):
     observations: Union[str, None] = None
     typeId: int
     reasonId: int
-    zipcCodeId: int
+    zipCodeId: int
 
 @app.post('/fires/{user_id}/{session_id}/', status_code=status.HTTP_201_CREATED, tags=['fires'])
 def new_fire(user_id: str, session_id: str, fire: Fire):

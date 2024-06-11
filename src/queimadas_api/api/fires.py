@@ -46,7 +46,7 @@ def __check_reason_id(reason_id):
             if not result:
                 raise Exception('Reason not found')
 
-def __check_zipc_code_id(zip_code_id):
+def __check_zip_code_id(zip_code_id):
     with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
             query = """
                 SELECT id
@@ -64,7 +64,7 @@ def __check_zipc_code_id(zip_code_id):
 def __check_new_fire(fire):
     __check_type_id(fire.typeId)
     __check_reason_id(fire.reasonId)
-    __check_zipc_code_id(fire.zipCodeId)
+    __check_zip_code_id(fire.zipCodeId)
 
 def create_fire(user_id, session_id, fire):
     try:
