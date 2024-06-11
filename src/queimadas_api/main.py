@@ -82,3 +82,8 @@ class Fire(BaseModel):
 def new_fire(user_id: str, session_id: str, fire: Fire):
     from api.fires import create_fire
     return create_fire(user_id, session_id, fire)
+
+@app.get('/fires/{user_id}/{session_id}/', status_code=status.HTTP_200_OK, tags=['fires'])
+def get_fires_by_user(user_id: str, session_id: str):
+    from api.fires import get_user_fires
+    return get_user_fires(user_id, session_id)

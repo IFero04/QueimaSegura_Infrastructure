@@ -114,7 +114,33 @@ def create_fire(user_id, session_id, fire):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
 
+## GET
+def get_user_fires(user_id, session_id):
+    try:
+        __check_user(user_id, session_id)
+    
+        with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
+            query = """
+                SELECT f.id, f.date, t.type, r.reason, z.zip_code, f.location, f.observations
+                FROM fires f
+                JOIN types t ON f.type_id = t.id
+                JOIN reasons r ON f.reason_id = r.id
+                JOIN zip_codes z ON f.zip_code_id = z.id
+                WHERE f.user_id = %s
+            """
 
+            parameters = (user_id, )
+            result = db.execute_query(query, parameters)
+            if not result:
+                raise Exception('No fires found')
+
+            return {
+                'status': 'OK!',
+                'message': 'Fires found!',
+                'result': result
+            }
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
 
 
