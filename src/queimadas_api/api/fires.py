@@ -58,7 +58,6 @@ def __check_zip_code_id(zip_code_id):
             result = db.execute_query(query, parameters, multi=False)
             if not result:
                 raise Exception('Zip Code not found')
-    
 
 ## REGISTER
 def __check_new_fire(fire):
@@ -146,10 +145,23 @@ def get_user_fires(user_id, session_id):
             if not result:
                 raise Exception('No fires found')
 
+            fires = []
+            for fire in result:
+                fire_id, date, type, reason, zip_code, location, observations = fire
+                fires.append({
+                    'fireId': fire_id,
+                    'date': date,
+                    'type': type,
+                    'reason': reason,
+                    'zipCode': zip_code,
+                    'location': location,
+                    'observations': observations
+                })
+
             return {
                 'status': 'OK!',
                 'message': 'Fires found!',
-                'result': result
+                'result': fires
             }
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
