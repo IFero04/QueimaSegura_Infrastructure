@@ -83,32 +83,36 @@ def create_fire(user_id, session_id, fire):
             if not result:
                 raise Exception('Fire not created')
             
-            if fire_id := result[0]:
-                if fire.location:
-                    query = f"""
-                        UPDATE fires(location)
-                        VALUES (%s)
-                        WHERE id = {fire_id}
-                    """
-                    parameters = (fire.location)
-                    db.execute_query(query, parameters, fetch=False)
-                if fire.observations:
-                    query = f"""
-                        UPDATE fires(observations)
-                        VALUES (%s)
-                        WHERE id = {fire_id}
-                    """
-                    parameters = (fire.observations)
-                    db.execute_query(query, parameters, fetch=False)
-                return {
-                    'status': 'OK!',
-                    'message': 'Fire created successfully!',
-                    'result': {
-                        'fireId': fire_id
-                    }
+            fire_id = result[0]
+
+            if fire.location:
+                query = """
+                    UPDATE fires
+                    SET location = %s
+                    WHERE id = %s
+                """
+                parameters = (fire.location, fire_id)
+                db.execute_query(query, parameters, fetch=False)
+            
+            if fire.observations:
+                query = """
+                    UPDATE fires
+                    SET observations = %s
+                    WHERE id = %s
+                """
+                parameters = (fire.observations, fire_id)
+                db.execute_query(query, parameters, fetch=False)
+
+            return {
+                'status': 'OK!',
+                'message': 'Fire created successfully!',
+                'result': {
+                    'fireId': fire_id
                 }
+            }
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
 
 
 
