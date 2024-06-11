@@ -11,11 +11,11 @@ CREATE USER api WITH PASSWORD 'api';
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- Add status column to fires table
-CREATE OR REPLACE FUNCTION calculate_fire_status(date DATE) RETURNS TEXT AS $$
+CREATE OR REPLACE FUNCTION calculate_fire_status(fire_date DATE) RETURNS TEXT AS $$
 BEGIN
     RETURN CASE
-        WHEN date > CURRENT_DATE THEN 'Scheduled'
-        WHEN date = CURRENT_DATE THEN 'Ongoing'
+        WHEN fire_date > CURRENT_DATE THEN 'Scheduled'
+        WHEN fire_date = CURRENT_DATE THEN 'Ongoing'
         ELSE 'Completed'
     END;
 END;
@@ -39,6 +39,7 @@ CREATE TABLE public.types (
     name_pt VARCHAR(255) NOT NULL,
     name_en VARCHAR(255) NOT NULL
 );
+
 INSERT INTO public.types (name_pt, name_en) VALUES 
     ('Queima', 'Burning'), 
     ('Queimada', 'Controlled Burning');
@@ -49,6 +50,7 @@ CREATE TABLE public.reasons (
     name_pt VARCHAR(255) NOT NULL,
     name_en VARCHAR(255) NOT NULL
 );
+
 INSERT INTO public.reasons (name_pt, name_en) VALUES 
     ('Queima Fitossanitária', 'Phytosanitary Burning'),
     ('Gestão de sobrantes agrícolas', 'Agricultural Surplus Management'),
@@ -58,7 +60,7 @@ INSERT INTO public.reasons (name_pt, name_en) VALUES
 
 -- Create the 'districts' table
 CREATE TABLE public.districts (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     name TEXT NOT NULL UNIQUE
 );
 
@@ -66,7 +68,7 @@ CREATE TABLE public.districts (
 CREATE TABLE public.counties (
     id SERIAL PRIMARY KEY,
     code INT NOT NULL,
-    district_id INT REFERENCES public.districts(id) NOT NULL,
+    district_id INT NOT NULL REFERENCES public.districts(id),
     name TEXT NOT NULL UNIQUE,
     UNIQUE (code, district_id)
 );
@@ -97,7 +99,7 @@ CREATE TABLE public.restrictions (
 CREATE TABLE public.fires (
     id              UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     date            DATE NOT NULL,
-    location        VARCHAR(22),
+    location        VARCHAR(255),
     observations    TEXT,
     type_id         INT NOT NULL REFERENCES public.types(id),
     reason_id       INT NOT NULL REFERENCES public.reasons(id),
@@ -106,6 +108,7 @@ CREATE TABLE public.fires (
     status          TEXT GENERATED ALWAYS AS (calculate_fire_status(date)) STORED
 );
 
+-- Create the 'permissions' table
 CREATE TABLE public.permissions (
     id                  UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     fire_id             UUID NOT NULL REFERENCES public.fires(id),
@@ -114,16 +117,16 @@ CREATE TABLE public.permissions (
     icn_user_id         UUID REFERENCES public.users(id),
     gestor_permited     BOOLEAN NOT NULL DEFAULT TRUE,
     gestor_reason       TEXT,
-    gestor_user_id      UUID REFERENCES public.users(id),
+    gestor_user_id      UUID REFERENCES public.users(id)
 );
 
 -- Grant permissions to the 'api' user
-GRANT SELECT, INSERT, UPDATE ON TABLE public.users TO api;
-GRANT SELECT, INSERT, UPDATE ON TABLE public.fires TO api;
-GRANT SELECT, INSERT, UPDATE ON TABLE public.permissions TO api;
-GRANT SELECT ON TABLE public.types TO api;
-GRANT SELECT ON TABLE public.reasons TO api;
-GRANT SELECT ON TABLE public.districts TO api;
-GRANT SELECT ON TABLE public.counties TO api;
-GRANT SELECT ON TABLE public.zip_codes TO api;
-GRANT SELECT, INSERT, UPDATE ON TABLE public.restrictions TO api;
+GRANT SELECT, INSERT, UPDATE ON public.users TO api;
+GRANT SELECT, INSERT, UPDATE ON public.fires TO api;
+GRANT SELECT, INSERT, UPDATE ON public.permissions TO api;
+GRANT SELECT ON public.types TO api;
+GRANT SELECT ON public.reasons TO api;
+GRANT SELECT ON public.districts TO api;
+GRANT SELECT ON public.counties TO api;
+GRANT SELECT ON public.zip_codes TO api;
+GRANT SELECT, INSERT, UPDATE ON public.restrictions TO api;
