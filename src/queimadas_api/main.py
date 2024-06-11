@@ -1,6 +1,6 @@
 import time
 import nltk
-from typing import Union
+from typing import Union, Optional
 from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel
 from util.db import check_db
@@ -70,4 +70,15 @@ def get_location(search: str):
     return handle_location_response(search)
 
 # FIRES
+class Fire(BaseModel):
+    date: str
+    location: Union[str, None] = None
+    observations: Union[str, None] = None
+    typeId: int
+    reasonId: int
+    zipcCodeId: int
 
+@app.post('/fires/{user_id}/{session_id}/', status_code=status.HTTP_201_CREATED, tags=['fires'])
+def new_fire(user_id: str, session_id: str, fire: Fire):
+    from api.fires import create_fire
+    return create_fire(user_id, session_id, fire)

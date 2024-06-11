@@ -41,9 +41,20 @@ CREATE TABLE public.fires (
     observations    TEXT,
     type_id         INT NOT NULL,
     reason_id       INT NOT NULL,
-    zip_code_id     VARCHAR(8) NOT NULL,
+    zip_code_id     INT NOT NULL REFERENCES public.zip_codes(id),
     user_id         UUID NOT NULL REFERENCES public.users(id),
     status          TEXT GENERATED ALWAYS AS (calculate_fire_status(date)) STORED
+);
+
+CREATE TABLE public.permissions (
+    id                  UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    fire_id             UUID NOT NULL REFERENCES public.fires(id),
+    icn_permited        BOOLEAN NOT NULL DEFAULT TRUE,
+    icn_reason          TEXT,
+    icn_user_id         UUID REFERENCES public.users(id),
+    gestor_permited     BOOLEAN NOT NULL DEFAULT TRUE,
+    gestor_reason       TEXT,
+    gestor_user_id      UUID REFERENCES public.users(id),
 );
 
 -- Create the 'types' table
