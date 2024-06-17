@@ -26,12 +26,12 @@ class LoginCredentials(BaseModel):
     email: str
     password: str
 
-@app.post('/auth/check_email/', status_code=status.HTTP_200_OK, tags=['auth'])
+@app.get('/auth/check_email/', status_code=status.HTTP_200_OK, tags=['auth'])
 def check_email(email: str):
     from api.users import valid_email
     return valid_email(email)
 
-@app.post('/auth/check_session/', status_code=status.HTTP_200_OK, tags=['auth'])
+@app.get('/auth/check_session/', status_code=status.HTTP_200_OK, tags=['auth'])
 def check_session(user_id: str, session_id: str):
     from api.auth import check_session
     return check_session(user_id, session_id)
