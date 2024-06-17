@@ -110,9 +110,10 @@ def logout(user_id, session_id):
                 WHERE id = %s
             """
             parameters = (user_id, )
-            result = db.execute_query(query, parameters, multi=False)
-            if not result:
-                raise Exception('User not found')
+            try:
+                result = db.execute_query(query, parameters, multi=False)
+            except Exception as e:
+                    raise Exception('User not found')
 
             if active_session := result[0]:
                 if active_session != session_id:
