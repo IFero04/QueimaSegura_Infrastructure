@@ -21,6 +21,32 @@ app = FastAPI()
 def read_root():
     return {"apiName": settings.app_name}
 
+# AUTH
+class LoginCredentials(BaseModel):
+    email: str
+    password: str
+
+@app.post('/auth/check_email/', status_code=status.HTTP_200_OK, tags=['auth'])
+def check_email(email: str):
+    from api.users import valid_email
+    return valid_email(email)
+
+@app.post('/auth/check_session/', status_code=status.HTTP_200_OK, tags=['auth'])
+def check_session(user_id: str, session_id: str):
+    from api.auth import check_session
+    return check_session(user_id, session_id)
+
+@app.post('/login/', status_code=status.HTTP_202_ACCEPTED ,tags=['auth'])
+def login(credentials: LoginCredentials):
+    from api.users import login
+    return login(credentials)
+
+@app.delete('/logout/', status_code=status.HTTP_202_ACCEPTED, tags=['auth'])
+def logout(user_id: str, session_id: str):
+    from api.users import logout
+    return logout(user_id, session_id)
+
+
 # USERS
 class User(BaseModel):
     fullName: str
@@ -28,35 +54,17 @@ class User(BaseModel):
     password: str
     nif: str
 
-class LoginCredentials(BaseModel):
-    email: str
-    password: str
-
 ## TEMP 
 @app.get('/users/', status_code=status.HTTP_200_OK, tags=['users'])
 def get_users():
     from api.users import get_users
     return get_users()
 
-@app.post('/users/check_email/', status_code=status.HTTP_200_OK, tags=['users'])
-def check_email(email: str):
-    from api.users import valid_email
-    return valid_email(email)
-
+# USERS
 @app.post('/users/', status_code=status.HTTP_201_CREATED, tags=['users'])
 def create_user(user: User):
     from api.users import create_user
     return create_user(user)
-
-@app.post('/login/', status_code=status.HTTP_202_ACCEPTED ,tags=['users'])
-def login(credentials: LoginCredentials):
-    from api.users import login
-    return login(credentials)
-
-@app.delete('/logout/', status_code=status.HTTP_202_ACCEPTED, tags=['users'])
-def logout(user_id: str, session_id: str):
-    from api.users import logout
-    return logout(user_id, session_id)
 
 @app.put('/users/{user_id}/{session_id}/', status_code=status.HTTP_202_ACCEPTED, tags=['users'])
 def update_user(user_id: str, session_id: str, user: User):
