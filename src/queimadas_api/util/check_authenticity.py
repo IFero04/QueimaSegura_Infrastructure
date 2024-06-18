@@ -6,7 +6,7 @@ def check_session(user_id, session_id):
         query = """
             SELECT session_id
             FROM users
-            WHERE id = %s
+            WHERE id = %s;
         """
         parameters = (user_id, )
         try:
@@ -25,15 +25,13 @@ def check_admin_authenticity(admin_id, session_id):
         query = """
             SELECT session_id, type
             FROM users
-            WHERE id = %s
+            WHERE id = %s;
         """
         parameters = (admin_id, )
         try:
-            print("OLA1")
             result = db.execute_query(query, parameters, multi=False)
         except Exception as _:
-            print("OLA2")
-            raise ('User not found')
+            raise Exception('User not found')
         
         if active_session := result[0]:
             if active_session != session_id:
