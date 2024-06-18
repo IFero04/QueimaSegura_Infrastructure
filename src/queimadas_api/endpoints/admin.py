@@ -17,6 +17,11 @@ class UserUpdate(BaseModel):
     nif: Union[str, None] = None
     type: Union[int, None] = None
 
+@router.get('/users', status_code=status.HTTP_200_OK)
+def get_users(admin_id: str, session_id: str):
+    from api.admin import get_users
+    return get_users(admin_id, session_id)
+
 @router.post('/users', status_code=status.HTTP_201_CREATED)
 def create_user(admin_id: str, session_id: str , user: User):
     from api.admin import create_user

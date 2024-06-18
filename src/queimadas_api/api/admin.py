@@ -14,6 +14,39 @@ def _check_new_user(user):
     check_nif(user.nif)
     check_type(user.type)
 
+def get_users(admin_id, session_id):
+    try:
+        check_admin_authenticity(admin_id, session_id)
+        with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
+            query = """
+                SELECT id, full_name, email, nif, type, active
+                FROM users
+                WHERE deleted = false
+            """
+            result = db.execute_query(query, fetch=True)
+            if not result:
+                raise Exception('No users found')
+            
+            users = []
+            for user in result:
+                users.append({
+                    'user_id': user[0],
+                    'full_name': user[1],
+                    'email': user[2],
+                    'nif': user[3],
+                    'type': int(user[4]),
+                    'active': user[5]
+                })
+
+            return {
+                'status': 'OK!',
+                'message': 'Users found successfully!',
+                'result': users
+            }
+
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+
 def create_user(admin_id ,session_id, user):
     try:
         check_admin_authenticity(admin_id, session_id)
