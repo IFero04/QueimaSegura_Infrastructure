@@ -83,3 +83,56 @@ def update_user(user_id, admin_id, session_id, user):
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
         
+def delete_user(user_id, admin_id, session_id):
+    try:
+        check_admin_authenticity(admin_id, session_id)
+        _check_user_id(user_id)
+        with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
+            query = "Upadate users SET deleted = true WHERE id = %s;"
+            parameters = (user_id, )
+            db.execute_query(query, parameters, fetch=False)
+        
+        return {
+            'status': 'OK!',
+            'message': 'User deleted'
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    
+def ban_user(user_id, admin_id, session_id):
+    try:
+        check_admin_authenticity(admin_id, session_id)
+        _check_user_id(user_id)
+        with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
+            query = "Upadate users SET active = false WHERE id = %s;"
+            parameters = (user_id, )
+            db.execute_query(query, parameters, fetch=False)
+        
+        return {
+            'status': 'OK!',
+            'message': 'User banned'
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+def unban_user(user_id, admin_id, session_id):
+    try:
+        check_admin_authenticity(admin_id, session_id)
+        _check_user_id(user_id)
+        with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
+            query = "Upadate users SET active = true WHERE id = %s;"
+            parameters = (user_id, )
+            db.execute_query(query, parameters, fetch=False)
+        
+        return {
+            'status': 'OK!',
+            'message': 'User unbanned'
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    
+
+                            

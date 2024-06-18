@@ -32,3 +32,18 @@ def update_user(user_id: str, admin_id, session_id: str, user: UserUpdate):
     if user.fullName:
         user.fullName = user.fullName.title()
     return update_user(user_id, admin_id, session_id, user)
+
+@router.delete('/users/{user_id}', status_code=status.HTTP_202_ACCEPTED)
+def delete_user(user_id: str, admin_id, session_id: str):
+    from api.admin import delete_user
+    return delete_user(user_id, admin_id, session_id)
+
+@router.patch('/users/ban/{user_id}', status_code=status.HTTP_202_ACCEPTED)
+def ban_user(user_id: str, admin_id, session_id: str):
+    from api.admin import ban_user
+    return ban_user(user_id, admin_id, session_id)
+
+@router.patch('/users/un/{user_id}', status_code=status.HTTP_200_OK)
+def unban_user(user_id: str, admin_id, session_id: str):
+    from api.admin import unban_user
+    return unban_user(user_id, admin_id, session_id)

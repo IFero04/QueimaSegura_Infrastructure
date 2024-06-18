@@ -31,7 +31,8 @@ CREATE TABLE public.users (
     password        VARCHAR(32) NOT NULL,
     avatar          VARCHAR(255),
     type            INT NOT NULL DEFAULT 0,
-    active          BOOLEAN NOT NULL DEFAULT TRUE
+    active          BOOLEAN NOT NULL DEFAULT TRUE,
+    deleted         BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 -- Create the 'types' table
