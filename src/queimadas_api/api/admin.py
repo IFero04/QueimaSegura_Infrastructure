@@ -20,8 +20,6 @@ def _check_new_user(user):
 def create_user(admin_id ,session_id, user):
     try:
         check_admin_authenticity(admin_id, session_id)
-        print("Cheguei Aqui")
-        return
         _check_new_user(user)
         with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
             query = """
