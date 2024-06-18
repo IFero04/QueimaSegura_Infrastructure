@@ -71,11 +71,14 @@ def update_user(user_id, admin_id, session_id, user):
             check_type(user.type)
             queries_and_params.append(("UPDATE users SET type = %s WHERE id = %s;", (user.type, user_id)))
 
-        print(user)
-        print(queries_and_params)
         with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
             for query, parameters in queries_and_params:
                 db.execute_query(query, parameters, fetch=False)
+        
+        return {
+            'status': 'OK!',
+            'message': 'User updated'
+        }
 
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
