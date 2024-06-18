@@ -30,7 +30,8 @@ CREATE TABLE public.users (
     email           VARCHAR(255) NOT NULL UNIQUE,
     password        VARCHAR(32) NOT NULL,
     avatar          VARCHAR(255),
-    type            INT NOT NULL DEFAULT 0
+    type            INT NOT NULL DEFAULT 0,
+    active          BOOLEAN NOT NULL DEFAULT TRUE
 );
 
 -- Create the 'types' table
