@@ -75,6 +75,7 @@ class PostgresDB:
             
             return None
         except psycopg2.DatabaseError as exception:
+            print(f"Database error: {exception}")
             self.close_cursor()
             raise Exception(exception)
         
