@@ -31,6 +31,7 @@ def check_admin_authenticity(admin_id, session_id):
         try:
             result = db.execute_query(query, parameters, multi=False)
         except Exception as _:
+            print("OLA")
             raise ('User not found')
         
         if active_session := result[0]:
