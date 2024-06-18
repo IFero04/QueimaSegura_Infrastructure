@@ -58,19 +58,18 @@ def update_user(user_id, admin_id, session_id, user):
         check_admin_authenticity(admin_id, session_id)
         _check_user_id(user_id)
         queries_and_params = []
-        for key, value in user.dict(exclude_none=True).items():
-            if key == 'email':
-                check_email(value)
-                queries_and_params.append(("UPDATE users SET email = LOWER(%s) WHERE id = %s;", (value, user_id)))
-            if key == 'fullName':
-                check_full_name(value)
-                queries_and_params.append(("UPDATE users SET fullName = %s WHERE id = %s;", (value, user_id)))
-            if key == 'nif':
-                check_nif(value)
-                queries_and_params.append(("UPDATE users SET nif = %s WHERE id = %s;", (value, user_id)))
-            if key == 'type':
-                check_type(value)
-                queries_and_params.append(("UPDATE users SET type = %s WHERE id = %s;", (value, user_id)))
+        if user.email:
+            check_email(user.email)
+            queries_and_params.append(("UPDATE users SET email = LOWER(%s) WHERE id = %s;", (user.email, user_id)))
+        if user.fullName:
+            check_full_name(user.fullName)
+            queries_and_params.append(("UPDATE users SET fullName = %s WHERE id = %s;", (user.fullName, user_id)))
+        if user.nif:
+            check_nif(user.nif)
+            queries_and_params.append(("UPDATE users SET nif = %s WHERE id = %s;", (user.nif, user_id)))
+        if user.type:
+            check_type(user.type)
+            queries_and_params.append(("UPDATE users SET type = %s WHERE id = %s;", (user.type, user_id)))
 
         with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
             for query, parameters in queries_and_params:

@@ -31,5 +31,4 @@ def update_user(user_id: str, admin_id, session_id: str, user: UserUpdate):
         user.email = user.email.lower()
     if user.fullName:
         user.fullName = user.fullName.title()
-    user = user.dict(exclude_none=True)
     return update_user(user_id, admin_id, session_id, user)
