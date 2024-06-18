@@ -43,3 +43,42 @@ def create_user(admin_id ,session_id, user):
                 raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='NIF already exists')
         
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=errorMsg)
+    
+def _check_user_id(user_id):
+    with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
+        query = "SELECT id FROM users WHERE id = %s;"
+        parameters = (user_id, )
+        try:
+            _ = db.execute_query(query, parameters, multi=False)
+        except Exception as _:
+            raise Exception('User not found')
+    
+def update_user(user_id, admin_id, session_id, user):
+    try:
+        check_admin_authenticity(admin_id, session_id)
+        _check_user_id(user_id)
+        queries_and_params = []
+        for key, value in user.dict(exclude_none=True).items():
+            if key == 'email':
+                check_email(value)
+                queries_and_params.append(("UPDATE users SET email = LOWER(%s) WHERE id = %s;", (value, user_id)))
+            if key == 'fullName':
+                check_full_name(value)
+                queries_and_params.append(("UPDATE users SET fullName = %s WHERE id = %s;", (value, user_id)))
+            if key == 'nif':
+                check_nif(value)
+                queries_and_params.append(("UPDATE users SET nif = %s WHERE id = %s;", (value, user_id)))
+            if key == 'type':
+                check_type(value)
+                queries_and_params.append(("UPDATE users SET type = %s WHERE id = %s;", (value, user_id)))
+
+        with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
+            for query, parameters in queries_and_params:
+                try:
+                    db.execute_query(query, parameters, fetch=False)
+                except Exception as e:
+                    raise Exception('Error try to update user')
+
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+        
