@@ -106,7 +106,7 @@ def ban_user(user_id, admin_id, session_id):
         _check_user_id(user_id)
         with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
             query = "Upadate users SET active = false WHERE id = %s;"
-            parameters = (user_id)
+            parameters = (user_id, )
             db.execute_query(query, parameters, fetch=False)
         
         return {
