@@ -60,16 +60,16 @@ def update_user(user_id, admin_id, session_id, user):
         queries_and_params = []
         if user.email:
             check_email(user.email)
-            queries_and_params.append(("UPDATE users SET email = LOWER(%s) WHERE id = %s;", (user.email, user_id, )))
+            queries_and_params.append(("UPDATE users SET email = %s WHERE id = %s;", (user.email, user_id)))
         if user.fullName:
             check_full_name(user.fullName)
-            queries_and_params.append(("UPDATE users SET fullName = %s WHERE id = %s;", (user.fullName, user_id, )))
+            queries_and_params.append(("UPDATE users SET full_name = %s WHERE id = %s;", (user.fullName, user_id)))
         if user.nif:
             check_nif(user.nif)
-            queries_and_params.append(("UPDATE users SET nif = %s WHERE id = %s;", (user.nif, user_id, )))
+            queries_and_params.append(("UPDATE users SET nif = %s WHERE id = %s;", (user.nif, user_id)))
         if user.type:
             check_type(user.type)
-            queries_and_params.append(("UPDATE users SET type = %s WHERE id = %s;", (user.type, user_id,)))
+            queries_and_params.append(("UPDATE users SET type = %s WHERE id = %s;", (user.type, user_id)))
 
         print(user)
         print(queries_and_params)
