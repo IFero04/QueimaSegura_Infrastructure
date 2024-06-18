@@ -1,8 +1,6 @@
 import time
 import nltk
-from typing import Union, Optional
-from fastapi import FastAPI, HTTPException, status
-from pydantic import BaseModel
+from fastapi import FastAPI, status
 from util.db import check_db
 from util.config import settings
 
@@ -21,56 +19,15 @@ app = FastAPI()
 def read_root():
     return {"apiName": settings.app_name}
 
-from endpoints import auth
+from endpoints import auth, users, location, fires
 
 app.include_router(auth.router, prefix="/auth", tags=['auth'])
-
-
-# USERS
-class User(BaseModel):
-    fullName: str
-    email: str
-    password: str
-    nif: str
+app.include_router(users.router, prefix="/users", tags=['users'])
+app.include_router(location.router, prefix="/location", tags=['location'])
+app.include_router(fires.router, prefix="/fires", tags=['fires'])
 
 ## TEMP 
 @app.get('/users/', status_code=status.HTTP_200_OK, tags=['users'])
 def get_users():
     from api.users import get_users
     return get_users()
-
-# USERS
-@app.post('/users/', status_code=status.HTTP_201_CREATED, tags=['users'])
-def create_user(user: User):
-    from api.users import create_user
-    return create_user(user)
-
-@app.put('/users/{user_id}/{session_id}/', status_code=status.HTTP_202_ACCEPTED, tags=['users'])
-def update_user(user_id: str, session_id: str, user: User):
-    from api.users import update_user
-    return update_user(user_id, session_id, user)
-
-# LOCATION
-@app.get('/location/', status_code=status.HTTP_202_ACCEPTED, tags=['location'])
-def get_location(search: str):
-    from api.location import handle_location_response
-    return handle_location_response(search)
-
-# FIRES
-class Fire(BaseModel):
-    date: str
-    typeId: int
-    reasonId: int
-    zipCodeId: int
-    location: Union[str, None] = None
-    observations: Union[str, None] = None
-
-@app.post('/fires/{user_id}/{session_id}/', status_code=status.HTTP_201_CREATED, tags=['fires'])
-def new_fire(user_id: str, session_id: str, fire: Fire):
-    from api.fires import create_fire
-    return create_fire(user_id, session_id, fire)
-
-@app.get('/fires/{user_id}/{session_id}/', status_code=status.HTTP_200_OK, tags=['fires'])
-def get_fires_by_user(user_id: str, session_id: str):
-    from api.fires import get_user_fires
-    return get_user_fires(user_id, session_id)
