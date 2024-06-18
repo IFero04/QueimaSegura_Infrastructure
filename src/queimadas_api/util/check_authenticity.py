@@ -27,11 +27,12 @@ def check_admin_authenticity(admin_id, session_id):
             FROM users
             WHERE id = %s
         """
-        parameters = (admin_id, )
+        parameters = (admin_id)
         try:
+            print("OLA1")
             result = db.execute_query(query, parameters, multi=False)
         except Exception as _:
-            print("OLA")
+            print("OLA2")
             raise ('User not found')
         
         if active_session := result[0]:
