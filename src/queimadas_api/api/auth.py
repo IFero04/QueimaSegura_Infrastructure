@@ -14,7 +14,7 @@ def valid_email(email):
             query = """
                 SELECT email
                 FROM users
-                WHERE email = %s
+                WHERE email = %s;
             """
             parameters = (email, )
             result = db.execute_query(query, parameters, multi=False)
@@ -29,31 +29,6 @@ def valid_email(email):
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
-def check_session(user_id, session_id):
-    try:
-        with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
-            query = """
-                SELECT session_id
-                FROM users
-                WHERE id = %s
-            """
-            parameters = (user_id, )
-            try:
-                result = db.execute_query(query, parameters, multi=False)
-            except Exception as e:
-                raise Exception('User not found')
-            
-            if active_session := result[0]:
-                if active_session != session_id:
-                    raise Exception('Session_id does not match')
-
-            return {
-                'status': 'OK!',
-                'message': 'Session is valid!'
-            }
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
-
 ## LOGIN
 def _check_login(credentials):
     check_email(credentials.email)
@@ -67,7 +42,7 @@ def login(credentials):
             query = """
                 SELECT id, full_name, nif, password, avatar, type
                 FROM users
-                WHERE email = %s
+                WHERE email = %s;
             """
             parameters = (credentials.email, )
             result = db.execute_query(query, parameters, multi=False)
@@ -82,7 +57,7 @@ def login(credentials):
             query = """
                 UPDATE users
                 SET session_id = %s
-                WHERE id = %s
+                WHERE id = %s;
             """
             parameters = (session, user_id, )
             db.execute_query(query, parameters, fetch=False)
@@ -111,7 +86,7 @@ def logout(user_id, session_id):
             query = """
                 SELECT session_id
                 FROM users
-                WHERE id = %s
+                WHERE id = %s;
             """
             parameters = (user_id, )
             try:
@@ -126,7 +101,7 @@ def logout(user_id, session_id):
                 query = """
                     UPDATE users
                     SET session_id = NULL
-                    WHERE id = %s
+                    WHERE id = %s;
                 """
                 parameters = (user_id, )
                 db.execute_query(query, parameters, fetch=False)
@@ -135,6 +110,8 @@ def logout(user_id, session_id):
                     'status': 'OK!',
                     'message': 'User logged out successfully!'
                 }
+            else:
+                raise Exception('User dind''t login yet')
 
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))

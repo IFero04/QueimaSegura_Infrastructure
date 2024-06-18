@@ -102,7 +102,7 @@ def update_user(user_id, admin_id, session_id, user):
         
         return {
             'status': 'OK!',
-            'message': 'User updated'
+            'message': 'User updated successfully!'
         }
 
     except Exception as e:

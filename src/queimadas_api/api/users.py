@@ -3,6 +3,7 @@ import uuid
 from fastapi import HTTPException, status
 from util.db import PostgresDB
 from util.config import settings
+from util.check_authenticity import *
 from util.check_strings import *
 
 def get_users():
@@ -10,7 +11,7 @@ def get_users():
         with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
             query = """
                 SELECT id, session_id, full_name, email, nif, password, type
-                FROM users
+                FROM users;
             """
             result = db.execute_query(query, fetch=True)
             if not result:
@@ -28,11 +29,11 @@ def get_users():
                     'type': int(user[6])
                 })
 
-            return {
-                'status': 'OK!',
-                'message': 'Users found successfully!',
-                'result': users
-            }
+        return {
+            'status': 'OK!',
+            'message': 'Users found successfully!',
+            'result': users
+        }
 
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
@@ -54,22 +55,22 @@ def create_user(user):
             query = """
                 INSERT INTO users(full_name, email, password, nif, session_id)
                 VALUES (%s, %s, %s, %s, %s)
-                RETURNING id
+                RETURNING id;
             """
             parameters = (user.fullName, user.email, user.password, user.nif, session, )
             result = db.execute_query(query, parameters, multi=False)
             if not result:
                 raise Exception('User not created')
 
-            if user_id := result[0]:
-                return {
-                    'status': 'OK!',
-                    'message': 'User created successfully!',
-                    'result': {
-                        'userId': user_id,
-                        'sessionId': session
-                    }
+        if user_id := result[0]:
+            return {
+                'status': 'OK!',
+                'message': 'User created successfully!',
+                'result': {
+                    'userId': user_id,
+                    'sessionId': session
                 }
+            }
 
     except Exception as e:
         errorMsg = str(e)
@@ -82,44 +83,28 @@ def create_user(user):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=errorMsg)
 
 ## UPDATE
-def _check_update_user(user):
-    check_full_name(user.fullName)
-    check_email(user.email)
-    check_password(user.password)
-    check_nif(user.nif)
-
 def update_user(user_id, session_id, user):
     try:
-        _check_update_user(user)
+        check_session(user_id, session_id)
+        queries_and_params = []
+        if user.email:
+            check_email(user.email)
+            queries_and_params.append(("UPDATE users SET email = %s WHERE id = %s;", (user.email, user_id)))
+        if user.fullName:
+            check_full_name(user.fullName)
+            queries_and_params.append(("UPDATE users SET full_name = %s WHERE id = %s;", (user.fullName, user_id)))
+        if user.nif:
+            check_nif(user.nif)
+            queries_and_params.append(("UPDATE users SET nif = %s WHERE id = %s;", (user.nif, user_id)))
 
         with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
-            query = """
-                SELECT session_id
-                FROM users
-                WHERE id = %s
-            """
-
-            parameters = (user_id, )
-            result = db.execute_query(query, parameters, multi=False)
-            if not result:
-                raise Exception('User not found')
-            
-            if active_session := result[0]:
-                if active_session != session_id:
-                    raise Exception('Session_id does not match')
-                
-                query = """
-                    UPDATE users
-                    SET full_name = %s, email = %s, password = %s, nif = %s
-                    WHERE id = %s
-                """
-                parameters = (user.fullName, user.email, user.password, user.nif, user_id, )
+            for query, parameters in queries_and_params:
                 db.execute_query(query, parameters, fetch=False)
     
-                return {
-                    'status': 'OK!',
-                    'message': 'User updated successfully!'
-                }
+        return {
+            'status': 'OK!',
+            'message': 'User updated successfully!'
+        }
             
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
