@@ -131,3 +131,7 @@ GRANT SELECT ON public.districts TO api;
 GRANT SELECT ON public.counties TO api;
 GRANT SELECT ON public.zip_codes TO api;
 GRANT SELECT, INSERT, UPDATE ON public.restrictions TO api;
+
+
+INSERT INTO users(full_name, email, password, nif, type)
+VALUES ("admin", "admin@admin.admin", "210cf7aa5e2682c9c9d4511f88fe2789", "000", 2)

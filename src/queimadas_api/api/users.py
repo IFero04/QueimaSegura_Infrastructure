@@ -38,8 +38,6 @@ def get_users():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
 
-
-
 ## REGISTER
 def _check_new_user(user):
     check_full_name(user.fullName)

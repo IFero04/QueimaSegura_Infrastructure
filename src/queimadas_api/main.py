@@ -19,9 +19,10 @@ app = FastAPI()
 def read_root():
     return {"apiName": settings.app_name}
 
-from endpoints import auth, users, location, fires
+from endpoints import auth, admin, users, location, fires
 
 app.include_router(auth.router, prefix="/auth", tags=['auth'])
+app.include_router(admin.router, prefix="/admin", tags=['admin'])
 app.include_router(users.router, prefix="/users", tags=['users'])
 app.include_router(location.router, prefix="/location", tags=['location'])
 app.include_router(fires.router, prefix="/fires", tags=['fires'])

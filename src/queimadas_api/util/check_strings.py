@@ -22,3 +22,7 @@ def check_nif(nif):
         raise Exception('NIF must have only digits')
     if nif[0] in ('4','7'):
         raise Exception('Invalid NIF')
+    
+def check_type(type):
+    if type not in (0, 1, 2):
+        raise Exception('Invalid type')
