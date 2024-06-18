@@ -15,6 +15,8 @@ def check_session(user_id, session_id):
             raise ('User not found')
         
         if active_session := result[0]:
+            if active_session == None:
+                raise Exception('Session does not exist')
             if active_session != session_id:
                 raise Exception('Session does not match')
 
@@ -32,6 +34,8 @@ def check_admin_authenticity(admin_id, session_id):
             raise ('User not found')
         
         if active_session := result[0]:
+            if active_session == None:
+                raise Exception('Session does not exist')
             if active_session != session_id:
                 raise Exception('Session does not match')
         if type := result[1]:
