@@ -112,10 +112,11 @@ CREATE TABLE public.fires (
 CREATE TABLE public.permissions (
     id                  UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     fire_id             UUID NOT NULL REFERENCES public.fires(id),
-    icn_permited        BOOLEAN NOT NULL DEFAULT TRUE,
-    icn_reason          TEXT,
-    icn_user_id         UUID REFERENCES public.users(id),
-    gestor_permited     BOOLEAN NOT NULL DEFAULT TRUE,
+    icnf_permited       BOOLEAN NOT NULL DEFAULT FALSE,
+    icnf_reason         TEXT,
+    icnf_number         TEXT,
+    icnf_name           TEXT,
+    gestor_permited     BOOLEAN NOT NULL DEFAULT FALSE,
     gestor_reason       TEXT,
     gestor_user_id      UUID REFERENCES public.users(id)
 );

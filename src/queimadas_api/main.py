@@ -21,30 +21,9 @@ app = FastAPI()
 def read_root():
     return {"apiName": settings.app_name}
 
-# AUTH
-class LoginCredentials(BaseModel):
-    email: str
-    password: str
+from endpoints import auth
 
-@app.get('/auth/check_email/', status_code=status.HTTP_200_OK, tags=['auth'])
-def check_email(email: str):
-    from api.auth import valid_email
-    return valid_email(email)
-
-@app.get('/auth/check_session/', status_code=status.HTTP_200_OK, tags=['auth'])
-def check_session(user_id: str, session_id: str):
-    from api.auth import check_session
-    return check_session(user_id, session_id)
-
-@app.post('/login/', status_code=status.HTTP_202_ACCEPTED ,tags=['auth'])
-def login(credentials: LoginCredentials):
-    from api.auth import login
-    return login(credentials)
-
-@app.delete('/logout/', status_code=status.HTTP_202_ACCEPTED, tags=['auth'])
-def logout(user_id: str, session_id: str):
-    from api.auth import logout
-    return logout(user_id, session_id)
+app.include_router(auth.router, prefix="/auth", tags=['auth'])
 
 
 # USERS
