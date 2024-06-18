@@ -6,9 +6,6 @@ from util.check_authenticity import *
 from util.check_strings import *
 
 
-
-
-
 ## USERS
 def _check_new_user(user):
     check_full_name(user.fullName)
