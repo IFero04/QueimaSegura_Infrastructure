@@ -78,19 +78,10 @@ def create_user(admin_id ,session_id, user):
         
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=errorMsg)
     
-def _check_user_id(user_id):
-    with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
-        query = "SELECT id FROM users WHERE id = %s;"
-        parameters = (user_id, )
-        try:
-            _ = db.execute_query(query, parameters, multi=False)
-        except Exception as _:
-            raise Exception('User not found')
-    
 def update_user(user_id, admin_id, session_id, user):
     try:
         check_admin_authenticity(admin_id, session_id)
-        _check_user_id(user_id)
+        check_user_id(user_id)
         queries_and_params = []
         if user.email:
             check_email(user.email)
@@ -120,9 +111,9 @@ def update_user(user_id, admin_id, session_id, user):
 def delete_user(user_id, admin_id, session_id):
     try:
         check_admin_authenticity(admin_id, session_id)
-        _check_user_id(user_id)
+        check_user_id(user_id)
         with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
-            query = "Upadate users SET deleted = true WHERE id = %s;"
+            query = "Update users SET deleted = true WHERE id = %s;"
             parameters = (user_id, )
             db.execute_query(query, parameters, fetch=False)
         
@@ -137,9 +128,9 @@ def delete_user(user_id, admin_id, session_id):
 def ban_user(user_id, admin_id, session_id):
     try:
         check_admin_authenticity(admin_id, session_id)
-        _check_user_id(user_id)
+        check_user_id(user_id)
         with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
-            query = "Upadate users SET active = false WHERE id = %s;"
+            query = "Update users SET active = false WHERE id = %s;"
             parameters = (user_id, )
             db.execute_query(query, parameters, fetch=False)
         
@@ -154,9 +145,9 @@ def ban_user(user_id, admin_id, session_id):
 def unban_user(user_id, admin_id, session_id):
     try:
         check_admin_authenticity(admin_id, session_id)
-        _check_user_id(user_id)
+        check_user_id(user_id)
         with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
-            query = "Upadate users SET active = true WHERE id = %s;"
+            query = "Update users SET active = true WHERE id = %s;"
             parameters = (user_id, )
             db.execute_query(query, parameters, fetch=False)
         

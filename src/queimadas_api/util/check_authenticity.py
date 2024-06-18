@@ -1,6 +1,22 @@
 from util.db import PostgresDB
 from util.config import settings
 
+def check_user_id(user_id):
+    with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
+        query = """
+            SELECT id
+            FROM users
+            WHERE id = %s;
+        """
+        parameters = (user_id, )
+        try:
+            result = db.execute_query(query, parameters, multi=False)
+        except Exception as _:
+            raise Exception('User not found')
+        
+        if not result:
+            raise Exception('User not found')
+
 def check_session(user_id, session_id):
     with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
         query = """
