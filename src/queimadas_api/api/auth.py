@@ -2,6 +2,7 @@ import uuid
 from fastapi import HTTPException, status
 from util.db import PostgresDB
 from util.config import settings
+from util.check_authenticity import *
 from util.check_strings import *
 
 
@@ -82,37 +83,20 @@ def login(credentials):
 ## LOGOUT
 def logout(user_id, session_id):
     try:
+        check_session(user_id, session_id)
         with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
             query = """
-                SELECT session_id
-                FROM users
+                UPDATE users
+                SET session_id = NULL
                 WHERE id = %s;
             """
             parameters = (user_id, )
-            try:
-                result = db.execute_query(query, parameters, multi=False)
-            except Exception as e:
-                    raise Exception('User not found')
+            db.execute_query(query, parameters, fetch=False)
 
-            if active_session := result[0]:
-                if active_session != session_id:
-                    raise Exception('Session_id does not match')
-                
-                query = """
-                    UPDATE users
-                    SET session_id = NULL
-                    WHERE id = %s;
-                """
-                parameters = (user_id, )
-                db.execute_query(query, parameters, fetch=False)
-    
-                return {
-                    'status': 'OK!',
-                    'message': 'User logged out successfully!'
-                }
-            else:
-                raise Exception('User dind''t login yet')
-
+            return {
+                'status': 'OK!',
+                'message': 'User logged out successfully!'
+            }
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
 
