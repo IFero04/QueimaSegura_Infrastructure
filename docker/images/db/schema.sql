@@ -60,6 +60,13 @@ INSERT INTO public.reasons (name_pt, name_en) VALUES
     ('Gestão de matos', 'Brush Management'),
     ('Outro', 'Other');
 
+CREATE TABLE public.controller(
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL
+);
+
+INSERT INTO public.controller(name) VALUES ('Kanguru');
+
 -- Create the 'districts' table
 CREATE TABLE public.districts (
     id SERIAL PRIMARY KEY,
@@ -107,7 +114,8 @@ CREATE TABLE public.fires (
     reason_id       INT NOT NULL REFERENCES public.reasons(id),
     zip_code_id     INT NOT NULL REFERENCES public.zip_codes(id),
     user_id         UUID NOT NULL REFERENCES public.users(id),
-    status          TEXT GENERATED ALWAYS AS (calculate_fire_status(date)) STORED
+    status          TEXT GENERATED ALWAYS AS (calculate_fire_status(date)) STORED,
+    cancelled       BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 -- Create the 'permissions' table
@@ -123,12 +131,14 @@ CREATE TABLE public.permissions (
     gestor_user_id      UUID REFERENCES public.users(id)
 );
 
+
 -- Grant permissions to the 'api' user
 GRANT SELECT, INSERT, UPDATE ON public.users TO api;
 GRANT SELECT, INSERT, UPDATE ON public.fires TO api;
 GRANT SELECT, INSERT, UPDATE ON public.permissions TO api;
 GRANT SELECT ON public.types TO api;
 GRANT SELECT ON public.reasons TO api;
+GRANT SELECT ON public.controller TO api;
 GRANT SELECT ON public.districts TO api;
 GRANT SELECT ON public.counties TO api;
 GRANT SELECT ON public.zip_codes TO api;
