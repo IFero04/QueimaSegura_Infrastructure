@@ -1,4 +1,3 @@
-import re
 import uuid
 from fastapi import HTTPException, status
 from util.db import PostgresDB

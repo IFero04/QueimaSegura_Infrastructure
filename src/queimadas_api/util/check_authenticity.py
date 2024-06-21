@@ -58,3 +58,42 @@ def check_admin_authenticity(admin_id, session_id):
         if type := result[1]:
             if type != 2:
                 raise Exception('User is not an admin')
+
+def check_zip_code_id(zip_code_id):
+    with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
+            query = """
+                SELECT id
+                FROM zip_codes
+                WHERE id = %s
+            """
+
+            parameters = (zip_code_id, )
+            result = db.execute_query(query, parameters, multi=False)
+            if not result:
+                raise Exception('Zip Code not found')
+            
+def check_reason_id(reason_id):
+    with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
+            query = """
+                SELECT id
+                FROM reasons
+                WHERE id = %s
+            """
+
+            parameters = (reason_id, )
+            result = db.execute_query(query, parameters, multi=False)
+            if not result:
+                raise Exception('Reason not found')
+
+def check_type_id(type_id):
+    with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
+            query = """
+                SELECT id
+                FROM types
+                WHERE id = %s
+            """
+
+            parameters = (type_id, )
+            result = db.execute_query(query, parameters, multi=False)
+            if not result:
+                raise Exception('Type not found')
