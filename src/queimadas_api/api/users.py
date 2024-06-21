@@ -172,13 +172,13 @@ def get_user_status(user_id, session_id):
         user_fires_pending = 0
         
         if result:
-            for fire_id, status in result:
-                if status == "Scheduled":
+            for fire_id, fire_status in result:
+                if fire_status == "Scheduled":
                     user_fires_pending += 1
-                elif status == "Ongoing":
+                elif fire_status == "Ongoing":
                     if __check_permissions(fire_id):
                         user_fires_pending += 1
-                elif status == "Completed":
+                elif fire_status == "Completed":
                     if __check_permissions(fire_id):
                         user_fires_complete += 1
         
