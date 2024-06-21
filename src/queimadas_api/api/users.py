@@ -38,6 +38,36 @@ def get_users():
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
+## GET
+def get_user(user_id, session_id):
+    try:
+        check_session(user_id, session_id)
+        with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
+            query = """
+                SELECT id, full_name, email, nif, type
+                FROM users
+                WHERE id = %s;
+            """
+            parameters = (user_id, )
+            result = db.execute_query(query, parameters, fetch=True)
+            if not result:
+                raise Exception('User not found')
+            
+            user = {
+                'id': result[0],
+                'fullName': result[1],
+                'email': result[2],
+                'nif': result[3],
+                'type': int(result[4])
+            }
+
+            return {
+                'status': 'OK!',
+                'message': 'User found successfully!',
+                'result': user
+            }
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
 ## REGISTER
 def _check_new_user(user):
@@ -108,3 +138,57 @@ def update_user(user_id, session_id, user):
             
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
+
+## STATUS
+def __check_permissions(fire_id):
+    query = """
+        SELECT icnf_permited, gestor_permited
+        FROM permissions
+        WHERE fire_id = %s
+    """
+    parameters = (fire_id, )
+    with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
+        permissions = db.execute_query(query, parameters)
+    if not permissions:
+        return True
+    icnf_permited, gestor_permited = permissions[0]
+    return icnf_permited and gestor_permited
+
+def get_user_status(user_id, session_id):
+    try:
+        check_session(user_id, session_id)
+        
+        query = """
+            SELECT id, status
+            FROM fires
+            WHERE user_id = %s AND cancelled = FALSE;
+        """
+        parameters = (user_id, )
+        
+        with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
+            result = db.execute_query(query, parameters)
+        
+        user_fires_complete = 0
+        user_fires_pending = 0
+        
+        if result:
+            for fire_id, status in result:
+                if status == "Scheduled":
+                    user_fires_pending += 1
+                elif status == "Ongoing":
+                    if __check_permissions(fire_id):
+                        user_fires_pending += 1
+                elif status == "Completed":
+                    if __check_permissions(fire_id):
+                        user_fires_complete += 1
+        
+        return {
+            'status': 'OK!',
+            'message': 'User status found successfully!',
+            'result': {
+                'firesComplete': user_fires_complete,
+                'firesPending': user_fires_pending
+            }
+        }
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))

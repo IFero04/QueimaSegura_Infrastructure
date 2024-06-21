@@ -28,3 +28,13 @@ def update_user(user_id: str, session_id: str, user: UserUpdate):
     user.email = user.email.lower()
     user.fullName = user.fullName.title()
     return update_user(user_id, session_id, user)
+
+@router.get('/{user_id}', status_code=status.HTTP_200_OK)
+def get_user(user_id: str, session_id: str):
+    from api.users import get_user
+    return get_user(user_id, session_id)
+
+@router.get('/status/{user_id}', status_code=status.HTTP_200_OK)
+def get_user_status(user_id: str, session_id: str):
+    from api.users import get_user_status
+    return get_user_status(user_id, session_id)

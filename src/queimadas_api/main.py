@@ -29,7 +29,7 @@ app.include_router(fires.router, prefix="/fires", tags=['fires'])
 app.include_router(static.router, prefix="/static", tags=['static'])
 
 ## TEMP 
-@app.get('/users/', status_code=status.HTTP_200_OK, tags=['users'])
+@app.get('/users/', status_code=status.HTTP_200_OK, tags=['root'])
 def get_users():
     from api.users import get_users
     return get_users()

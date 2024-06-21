@@ -1,4 +1,4 @@
-FROM postgres:16.1
+FROM postgres
 
 ENV POSTGRES_PASSWORD=top_secret
 
