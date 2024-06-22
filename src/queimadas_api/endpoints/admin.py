@@ -48,7 +48,7 @@ def ban_user(user_id: str, admin_id, session_id: str):
     from api.admin import ban_user
     return ban_user(user_id, admin_id, session_id)
 
-@router.patch('/users/un/{user_id}', status_code=status.HTTP_200_OK)
+@router.patch('/users/unban/{user_id}', status_code=status.HTTP_200_OK)
 def unban_user(user_id: str, admin_id, session_id: str):
     from api.admin import unban_user
     return unban_user(user_id, admin_id, session_id)
