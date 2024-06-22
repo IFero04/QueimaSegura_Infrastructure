@@ -1,6 +1,7 @@
 import time
 import nltk
 from fastapi import FastAPI, status
+from fastapi.middleware.cors import CORSMiddleware
 from util.db import check_db
 from util.config import settings
 
@@ -14,6 +15,13 @@ while not check_db(settings.pg_host, settings.pg_port, settings.pg_db_name, sett
 print("DataBase loaded.")
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/", status_code=status.HTTP_200_OK, tags=['root'])
 def read_root():
