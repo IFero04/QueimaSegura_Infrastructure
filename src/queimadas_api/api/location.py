@@ -1,8 +1,10 @@
 import re
+import requests
 from nltk.corpus import stopwords
 from fastapi import HTTPException, status
 from util.db import PostgresDB
 from util.config import settings
+
 
 NUMBER_RESULTS = 100
 STOP_WORDS = set(stopwords.words('portuguese'))
@@ -379,7 +381,6 @@ def get_location(search: str):
     if locations:
         return locations
 
-
 def handle_location_response(search: str):
     search_string = search.strip()
     locations = get_location(search_string)
@@ -396,4 +397,23 @@ def handle_location_response(search: str):
             'message': 'Location retrived successfully!',
             'result': locations
         }
-    raise HTTPException(status_code=404, detail='Location not found')
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Location not found')
+
+def get_zip_code_by_lat_lng_response(lat, lng):
+    url = f'https://geocode.maps.co/reverse?lat={lat}&lon={lng}&api_key={settings.geo_api_key}'
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        address = response.json()['address']
+
+        postcode = address.get('postcode')
+        county = address.get('county')
+        road = address.get('road')
+        village = address.get('village')
+
+        print(f"Postcode: {postcode}")
+        print(f"County: {county}")
+        print(f"Road: {road}")
+        print(f"Village: {village}")
+    except requests.RequestException as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Map is unavailable at the moment. Please try again later.")

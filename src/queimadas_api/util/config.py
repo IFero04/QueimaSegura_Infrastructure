@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     pg_db_name: str
     pg_user: str
     pg_password: str
+    geo_api_key: str
     app_name: str = "Queimadas API"
     items_per_user: int = 50
 
