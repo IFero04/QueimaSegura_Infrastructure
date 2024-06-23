@@ -6,16 +6,17 @@ from util.check_strings import *
   
 
 ## REGISTER
-def __check_new_fire(fire):
+def __check_new_fire(user_id, fire):
     check_type_id(fire.typeId)
     check_reason_id(fire.reasonId)
     check_zip_code_id(fire.zipCodeId)
     check_fire_approved(fire.zipCodeId, fire.date)
+    check_existing_fire(user_id, fire.zipCodeId, fire.date)
 
 def create_fire(user_id, session_id, fire):
     try:
         check_session(user_id, session_id)
-        __check_new_fire(fire)
+        __check_new_fire(user_id, fire)
     
         with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
             query = """

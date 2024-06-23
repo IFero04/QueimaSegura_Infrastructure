@@ -97,8 +97,6 @@ def check_type_id(type_id):
             result = db.execute_query(query, parameters, multi=False)
             if not result:
                 raise Exception('Type not found')
-            
-from datetime import date
 
 def check_fire_approved(zip_code_id, date):
     with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
@@ -128,4 +126,18 @@ def check_fire_approved(zip_code_id, date):
         
         if restriction_result:
             raise Exception(f'Fire not approved, restricted until {restriction_result[0]}')
-            
+
+def check_existing_fire(user_id, zip_code_id, date):
+    with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
+        query = """
+            SELECT 1
+            FROM public.fires
+            WHERE user_id = %s
+            AND zip_code_id = %s
+            AND date = %s;
+        """
+        parameters = (user_id, zip_code_id, date)
+        result = db.execute_query(query, parameters, multi=False)
+        
+        if result:
+            raise Exception('Fire already exists')
