@@ -410,10 +410,47 @@ def get_zip_code_by_lat_lng_response(lat, lng):
         county = address.get('county')
         road = address.get('road')
         village = address.get('village')
-
-        print(f"Postcode: {postcode}")
-        print(f"County: {county}")
-        print(f"Road: {road}")
-        print(f"Village: {village}")
     except Exception as _:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Map is unavailable at the moment. Please try again later.")
+    
+    try:
+        with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
+            query = """
+                SELECT id
+                FROM counties
+                WHERE name = %s
+            """
+            parameters = (county, )
+            county_id = db.execute_query(query, parameters, multi=False)
+            if not county_id:
+                raise Exception('County not found')
+            
+            query = """
+                SELECT *
+                FROM zip_codes
+                WHERE zip_code = %s AND county_id = %s AND location_name = %s AND location_name ILIKE %s
+            """
+            parameters = (postcode, county_id, village, f'%{road}%')
+            zip_codes = db.execute_query(query, parameters, multi=True)
+            zip_codes_json = [{
+                    'id': r[0],
+                    'location_code': r[1],
+                    'location_name': r[2],
+                    'ART_code': r[3],
+                    'ART_name': r[4],
+                    'tronco': r[5],
+                    'client': r[6],
+                    'zip_code': r[7],
+                    'zip_name': r[8],
+                    'county_id': r[9]
+            } for r in zip_codes]
+            if not zip_codes_json:
+                raise Exception('Zip code not found')
+            
+            return {
+                'status': 'OK!',
+                'message': 'Zip code retrived successfully!',
+                'result': zip_codes_json
+            }
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
