@@ -1,3 +1,4 @@
 psycopg2
 fastapi[all]
 nltk
+requests
