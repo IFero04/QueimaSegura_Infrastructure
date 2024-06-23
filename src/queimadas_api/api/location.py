@@ -428,9 +428,9 @@ def get_zip_code_by_lat_lng_response(lat, lng):
             query = """
                 SELECT *
                 FROM zip_codes
-                WHERE zip_code = %s AND county_id = %s AND location_name = %s AND location_name ILIKE %s
+                WHERE zip_code = %s AND county_id = %s AND location_name = %s
             """
-            parameters = (postcode, county_id, village, f'%{road}%')
+            parameters = (postcode, county_id, village, )
             zip_codes = db.execute_query(query, parameters, multi=True)
             zip_codes_json = [{
                     'id': r[0],
