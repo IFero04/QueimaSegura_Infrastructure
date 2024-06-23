@@ -407,31 +407,21 @@ def get_zip_code_by_lat_lng_response(lat, lng):
         address = response.json()['address']
 
         postcode = address.get('postcode')
-        county = address.get('county')
-        road = address.get('road')
         village = address.get('village')
+        road = address.get('road')
     except Exception as _:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Map is unavailable at the moment. Please try again later.")
     
     try:
         with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
             query = """
-                SELECT id
-                FROM counties
-                WHERE name = %s
-            """
-            parameters = (county, )
-            county_id = db.execute_query(query, parameters, multi=False)
-            if not county_id:
-                raise Exception('County not found')
-            
-            query = """
                 SELECT *
                 FROM zip_codes
-                WHERE zip_code = %s AND county_id = %s AND location_name = %s
+                WHERE zip_code = %s
             """
-            parameters = (postcode, county_id, village, )
+            parameters = (postcode,)
             zip_codes = db.execute_query(query, parameters, multi=True)
+            print(zip_codes)
             zip_codes_json = [{
                     'id': r[0],
                     'location_code': r[1],
@@ -447,6 +437,18 @@ def get_zip_code_by_lat_lng_response(lat, lng):
             if not zip_codes_json:
                 raise Exception('Zip code not found')
             
+            if village:
+                if len(zip_codes_json) > 1:
+                    new_zip_codes_json = [zip_code for zip_code in zip_codes_json if zip_code['location_name'] == village]
+                    if(new_zip_codes_json):
+                        zip_codes_json = new_zip_codes_json
+
+            if road:
+                if len(zip_codes_json) > 1:
+                    new_zip_codes_json = [zip_code for zip_code in zip_codes_json if road in zip_code['location_name']]
+                    if(new_zip_codes_json):
+                        zip_codes_json = new_zip_codes_json
+
             return {
                 'status': 'OK!',
                 'message': 'Zip code retrived successfully!',
