@@ -10,9 +10,7 @@ def __check_new_fire(fire):
     check_type_id(fire.typeId)
     check_reason_id(fire.reasonId)
     check_zip_code_id(fire.zipCodeId)
-    print("AQUI 1")
     check_fire_approved(fire.zipCodeId, fire.date)
-    print("AQUI 1")
 
 def create_fire(user_id, session_id, fire):
     try:

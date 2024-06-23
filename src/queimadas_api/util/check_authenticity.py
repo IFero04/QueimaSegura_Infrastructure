@@ -111,15 +111,12 @@ def check_fire_approved(zip_code_id, date):
         """
         parameters = (zip_code_id, )
         result = db.execute_query(query, parameters, multi=False)
-        print("QUERY 1")
-        print(result)
         
         if not result:
             raise Exception('Zip Code not found')
         
         district_id = result[0]
         
-        # Check for restrictions in the district on the given date
         restriction_query = """
             SELECT end_date
             FROM public.restrictions r
@@ -128,8 +125,6 @@ def check_fire_approved(zip_code_id, date):
         """
         restriction_parameters = (district_id, date)
         restriction_result = db.execute_query(restriction_query, restriction_parameters, multi=False)
-        print("QUERY 2")
-        print(restriction_result)
         
         if restriction_result:
             raise Exception(f'Fire not approved, restricted until {restriction_result[0]}')
