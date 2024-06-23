@@ -103,7 +103,7 @@ from datetime import date
 def check_fire_approved(zip_code_id, date):
     with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
         query = """
-            SELECT d.id AS district_id
+            SELECT d.id
             FROM public.zip_codes z
             JOIN public.counties c ON z.county_id = c.id
             JOIN public.districts d ON c.district_id = d.id
@@ -117,7 +117,7 @@ def check_fire_approved(zip_code_id, date):
         if not result:
             raise Exception('Zip Code not found')
         
-        district_id = result[0]['district_id']
+        district_id = result[0]
         
         # Check for restrictions in the district on the given date
         restriction_query = """
