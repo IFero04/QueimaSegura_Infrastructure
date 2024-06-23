@@ -5,37 +5,6 @@ from util.config import settings
 from util.check_authenticity import *
 from util.check_strings import *
 
-def get_users():
-    try:
-        with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
-            query = """
-                SELECT id, session_id, full_name, email, nif, password, type
-                FROM users;
-            """
-            result = db.execute_query(query, fetch=True)
-            if not result:
-                raise Exception('No users found')
-            
-            users = []
-            for user in result:
-                users.append({
-                    'user_id': user[0],
-                    'session_id': user[1],
-                    'full_name': user[2],
-                    'email': user[3],
-                    'nif': user[4],
-                    'password': user[5],
-                    'type': int(user[6])
-                })
-
-        return {
-            'status': 'OK!',
-            'message': 'Users found successfully!',
-            'result': users
-        }
-
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
 ## GET
 def get_user(user_id, session_id):
