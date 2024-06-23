@@ -75,7 +75,6 @@ def create_fire(user_id, session_id, fire):
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
-
 ## GET
 def get_user_fires(user_id, session_id):
     try:

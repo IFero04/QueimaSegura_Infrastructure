@@ -98,32 +98,36 @@ def check_type_id(type_id):
             if not result:
                 raise Exception('Type not found')
             
+from datetime import date
+
 def check_fire_approved(zip_code_id, date):
     with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
+        # Retrieve district ID from the zip code ID
         query = """
-        SELECT d.id
-        FROM public.zip_codes z
-        JOIN public.counties c ON z.county_id = c.id
-        JOIN public.districts d ON c.district_id = d.id
-        WHERE z.id = %s;
-    """
-    parameters = (zip_code_id, )
-    result = db.execute_query(query, parameters, multi=False)
-    if not result:
-        raise Exception('Zip Code not found')
-    
-    district_id = result[0]
-
-    restriction_query = """
-        SELECT 1
-        FROM public.restrictions r
-        WHERE r.district_id = %s
-        AND %s BETWEEN r.start_date AND r.end_date;
-    """
-    restriction_parameters = (district_id, date)
-    restriction_result = db.execute_query(restriction_query, restriction_parameters, multi=False)
-    
-    if restriction_result:
-        return True
-    else:
-        return False
+            SELECT d.id AS district_id
+            FROM public.zip_codes z
+            JOIN public.counties c ON z.county_id = c.id
+            JOIN public.districts d ON c.district_id = d.id
+            WHERE z.id = %s;
+        """
+        parameters = (zip_code_id, )
+        result = db.execute_query(query, parameters, multi=False)
+        
+        if not result:
+            raise Exception('Zip Code not found')
+        
+        district_id = result[0]['district_id']
+        
+        # Check for restrictions in the district on the given date
+        restriction_query = """
+            SELECT end_date
+            FROM public.restrictions r
+            WHERE r.district_id = %s
+            AND %s BETWEEN r.start_date AND r.end_date;
+        """
+        restriction_parameters = (district_id, date)
+        restriction_result = db.execute_query(restriction_query, restriction_parameters, multi=False)
+        
+        if restriction_result:
+            raise Exception(f'Fire not approved, restricted until {restriction_result[0]}')
+            
