@@ -415,5 +415,5 @@ def get_zip_code_by_lat_lng_response(lat, lng):
         print(f"County: {county}")
         print(f"Road: {road}")
         print(f"Village: {village}")
-    except requests.RequestException as e:
+    except Exception as _:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Map is unavailable at the moment. Please try again later.")
