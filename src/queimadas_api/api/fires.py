@@ -85,20 +85,14 @@ def get_user_fires(user_id, session_id):
             query = """
                 SELECT 
                     f.id, 
-                    f.date, 
-                    t.name_en AS type, 
-                    r.name_en AS reason, 
-                    z.zip_code, 
-                    f.location, 
-                    f.observations
+                    f.date,
+                    f.status,
+                    t.name_en,
+                    t.name_pt
                 FROM 
                     fires f
                 JOIN 
                     types t ON f.type_id = t.id
-                JOIN 
-                    reasons r ON f.reason_id = r.id
-                JOIN 
-                    zip_codes z ON f.zip_code_id = z.id
                 WHERE 
                     f.user_id = %s
             """
@@ -110,15 +104,13 @@ def get_user_fires(user_id, session_id):
 
             fires = []
             for fire in result:
-                fire_id, date, type, reason, zip_code, location, observations = fire
+                fire_id, date, fire_status, type_en, type_pt = fire
                 fires.append({
-                    'fireId': fire_id,
+                    'id': fire_id,
                     'date': date,
-                    'type': type,
-                    'reason': reason,
-                    'zipCode': zip_code,
-                    'location': location,
-                    'observations': observations
+                    'status': fire_status,
+                    'typeEn': type_en,
+                    'typePt': type_pt
                 })
 
             return {
@@ -128,6 +120,7 @@ def get_user_fires(user_id, session_id):
             }
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    
 
 
 
