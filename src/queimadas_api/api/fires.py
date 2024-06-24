@@ -94,7 +94,7 @@ def get_user_fires(user_id, session_id):
                 JOIN 
                     types t ON f.type_id = t.id
                 WHERE 
-                    f.user_id = %s
+                    f.user_id = %s AND f.cancelled = FALSE
             """
 
             parameters = (user_id,)
@@ -121,6 +121,74 @@ def get_user_fires(user_id, session_id):
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
     
+def get_fire_detail(user_id, session_id, fire_id):
+    try:
+        check_session(user_id, session_id)
+
+        with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
+            query = """
+                SELECT 
+                    f.id, 
+                    f.date,
+                    f.status,
+                    f.location,
+                    f.observations,
+                    t.name_en,
+                    t.name_pt,
+                    r.name_en,
+                    r.name_pt,
+                    z.zip_code,
+                    z.location_name,
+                    z.ART_name,
+                    z.tronco
+                FROM 
+                    fires f
+                JOIN 
+                    types t ON f.type_id = t.id
+                JOIN 
+                    reasons r ON f.reason_id = r.id
+                JOIN 
+                    zip_codes z ON f.zip_code_id = z.id
+                WHERE 
+                    f.id = %s
+            """
+
+            parameters = (fire_id,)
+            result = db.execute_query(query, parameters, multi=False)
+            if not result:
+                raise Exception('Fire not found')
+
+            fire_id, date, fire_status, location, observations, type_en, type_pt, reason_en, reason_pt, zip_code, location_name, ART_name, tronco = result
+            return {
+                'status': 'OK!',
+                'message': 'Fire found!',
+                'result': {
+                    'fire': {
+                        'id': fire_id,
+                        'date': date,
+                        'status': fire_status,
+                        'latlng': location,
+                        'observations': observations,
+                    },
+                    'type': {
+                        'namePt': type_pt,
+                        'nameEn': type_en
+                    },
+                    'reason': {
+                        'reasonEn': reason_en,
+                        'reasonPt': reason_pt
+                    },
+                    'zipCode': {
+                        'id': zip_code,
+                        'zipCode': zip_code,
+                        'locationName': location_name,
+                        'artName': ART_name,
+                        'tronco': tronco
+                    }
+                }
+            }
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) 
 
 
 
