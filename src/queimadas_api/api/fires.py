@@ -127,7 +127,8 @@ def get_fire_detail(user_id, session_id, fire_id):
 
         with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
             query = """
-                SELECT 
+                SELECT
+                    f.cancelled, 
                     f.id, 
                     f.date,
                     f.status,
@@ -158,7 +159,9 @@ def get_fire_detail(user_id, session_id, fire_id):
             if not result:
                 raise Exception('Fire not found')
 
-            fire_id, date, fire_status, location, observations, type_en, type_pt, reason_en, reason_pt, zip_code, location_name, ART_name, tronco = result
+            cancelled, fire_id, date, fire_status, location, observations, type_en, type_pt, reason_en, reason_pt, zip_code, location_name, ART_name, tronco = result
+            if cancelled:
+                raise Exception('Fire cancelled')
             return {
                 'status': 'OK!',
                 'message': 'Fire found!',
@@ -190,6 +193,25 @@ def get_fire_detail(user_id, session_id, fire_id):
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) 
 
+## CANCEL
+def delete_fire(user_id, session_id, fire_id):
+    try:
+        check_session(user_id, session_id)
 
+        with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
+            query = """
+                UPDATE fires
+                SET cancelled = TRUE
+                WHERE id = %s
+            """
 
+            parameters = (fire_id,)
+            db.execute_query(query, parameters, fetch=False)
+
+            return {
+                'status': 'OK!',
+                'message': 'Fire cancelled successfully!'
+            }
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 

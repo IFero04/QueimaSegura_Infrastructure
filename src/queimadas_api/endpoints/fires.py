@@ -23,7 +23,12 @@ def get_fires_by_user(user_id: str, session_id: str):
     from api.fires import get_user_fires
     return get_user_fires(user_id, session_id)
 
-@router.get('/detail/{fire_id}', status_code=status.HTTP_200_OK)
+@router.get('/{user_id}/{fire_id}', status_code=status.HTTP_200_OK)
 def get_fire_detail(user_id: str, session_id: str, fire_id: str):
     from api.fires import get_fire_detail
     return get_fire_detail(user_id, session_id, fire_id)
+
+@router.delete('/{user_id}/{fire_id}', status_code=status.HTTP_200_OK)
+def delete_fire(user_id: str, session_id: str, fire_id: str):
+    from api.fires import delete_fire
+    return delete_fire(user_id, session_id, fire_id)
