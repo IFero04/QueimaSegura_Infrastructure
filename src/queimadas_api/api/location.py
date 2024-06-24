@@ -4,10 +4,12 @@ from nltk.corpus import stopwords
 from fastapi import HTTPException, status
 from util.db import PostgresDB
 from util.config import settings
-
+from util.check_authenticity import *
+from util.check_strings import *
 
 NUMBER_RESULTS = 100
 STOP_WORDS = set(stopwords.words('portuguese'))
+
 
 ## QUERY
 def __build_query(rows: list, number_results: int):
@@ -381,7 +383,12 @@ def get_location(search: str):
     if locations:
         return locations
 
-def handle_location_response(search: str):
+def handle_location_response(user_id, session_id, search: str):
+    try:
+        check_session(user_id, session_id)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
+        
     search_string = search.strip()
     locations = get_location(search_string)
     if locations:
@@ -399,7 +406,11 @@ def handle_location_response(search: str):
         }
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Location not found')
 
-def get_zip_code_by_lat_lng_response(lat, lng):
+def get_zip_code_by_lat_lng_response(user_id, session_id, lat, lng):
+    try:
+        check_session(user_id, session_id)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
     url = f'https://geocode.maps.co/reverse?lat={lat}&lon={lng}&api_key={settings.geo_api_key}'
     try:
         response = requests.get(url)

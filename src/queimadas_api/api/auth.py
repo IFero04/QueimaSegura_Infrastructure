@@ -41,7 +41,7 @@ def login(credentials):
 
         with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
             query = """
-                SELECT id, full_name, nif, password, avatar, type
+                SELECT id, full_name, nif, password, avatar, type, active, deleted
                 FROM users
                 WHERE email = %s;
             """
@@ -49,7 +49,11 @@ def login(credentials):
             result = db.execute_query(query, parameters, multi=False)
             if not result:  
                 raise Exception('User not found')
-            user_id, full_name, nif, password, avatar, user_type = result
+            user_id, full_name, nif, password, avatar, user_type, active, deleted = result
+            if deleted:
+                raise Exception('User not found')
+            if not active:
+                raise Exception('User Banned')
             if password != credentials.password:
                 raise Exception('Invalid password')
             

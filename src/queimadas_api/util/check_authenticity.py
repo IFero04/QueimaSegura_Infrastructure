@@ -20,7 +20,7 @@ def check_user_id(user_id):
 def check_session(user_id, session_id):
     with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
         query = """
-            SELECT session_id
+            SELECT session_id, active, deleted
             FROM users
             WHERE id = %s;
         """
@@ -30,7 +30,12 @@ def check_session(user_id, session_id):
         except Exception as _:
             raise ('User not found')
         
-        if active_session := result[0]:
+        active_session, active, deleted = result
+        if deleted:
+            raise Exception('User not found')
+        if not active:
+            raise Exception('User Banned')
+        if active_session:
             if active_session != session_id:
                 raise Exception('Session does not match')
         else:
