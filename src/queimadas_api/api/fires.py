@@ -94,6 +94,9 @@ def create_fire(user_id, session_id, fire):
                 raise Exception('Error fetching fire details')
 
             date, fire_status, type_en, type_pt = result
+            transformed_status = fire_status
+            if(type_pt == 'Queimada'):
+                transformed_status = 'Pending'
 
             return {
                 'status': 'OK!',
@@ -101,7 +104,7 @@ def create_fire(user_id, session_id, fire):
                 'result': {
                     'fireId': fire_id,
                     'date': date,
-                    'status': fire_status,
+                    'status': transformed_status,
                     'typeEn': type_en,
                     'typePt': type_pt
                 }
