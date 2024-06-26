@@ -26,7 +26,7 @@ def get_admin_status(admin_id, session_id):
                 WHERE gestor_user_id IS null;
             """
             result = db.execute_query(query)
-            fires_approved = len(result)
+            fires_to_aprrove = len(result)
             query = """
                 SELECT id
                 FROM permissions
@@ -34,7 +34,7 @@ def get_admin_status(admin_id, session_id):
             """
             parameters = (admin_id, )
             result = db.execute_query(query, parameters)
-            fires_to_aprrove = len(result)
+            fires_approved = len(result)
 
         return {
             'status': 'OK!',
