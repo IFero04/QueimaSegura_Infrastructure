@@ -4,6 +4,7 @@ from util.db import PostgresDB
 from util.config import settings
 from util.check_authenticity import *
 from util.check_strings import *
+
   
 def __check_fire_date(fire_date_str):
     fire_date = datetime.strptime(fire_date_str, '%m/%d/%Y').date()
