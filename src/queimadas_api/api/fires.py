@@ -73,12 +73,35 @@ def create_fire(user_id, session_id, fire):
                 """
                 parameters = (fire_id,)
                 db.execute_query(query, parameters, fetch=False)
+            
+            query = """
+                SELECT 
+                    f.date,
+                    f.status,
+                    t.name_en,
+                    t.name_pt
+                FROM 
+                    fires f
+                JOIN 
+                    types t ON f.type_id = t.id
+                WHERE 
+                    f.user_id = %s AND f.id = %s AND f.cancelled = FALSE
+            """
+
+            parameters = (user_id, fire_id, )
+            result = db.execute_query(query, parameters, multi=False)
+
+            date, fire_status, type_en, type_pt = fire
 
             return {
                 'status': 'OK!',
                 'message': 'Fire created successfully!',
                 'result': {
-                    'fireId': fire_id
+                    'fireId': fire_id,
+                    'date': date,
+                    'status': fire_status,
+                    'typeEn': type_en,
+                    'typePt': type_pt
                 }
             }
     except Exception as e:
@@ -92,7 +115,6 @@ def get_user_fires(user_id, session_id):
         with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
             query = """
                 SELECT 
-                    f.id, 
                     f.date,
                     f.status,
                     t.name_en,
