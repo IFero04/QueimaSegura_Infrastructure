@@ -136,10 +136,32 @@ def get_user_fires(user_id, session_id):
             fires = []
             for fire in result:
                 fire_id, date, fire_status, type_en, type_pt = fire
+                query = """
+                    SELECT icnf_permited, gestor_permited
+                    FROM permissions
+                    WHERE fire_id = %s;
+                """
+                parameters = (fire_id,)
+                permissions = db.execute_query(query, parameters)
+                
+                if fire_status == 'Scheduled' and permissions:
+                    icnf_permitted, gestor_permitted = permissions[0]
+                    if not icnf_permitted or not gestor_permitted:
+                        transformed_status = 'Pending'
+                    else:
+                        transformed_status = fire_status
+                else:
+                    transformed_status = fire_status
+                
+                if fire_status == 'Completed' and permissions:
+                    icnf_permitted, gestor_permitted = permissions[0]
+                    if not icnf_permitted or not gestor_permitted:
+                        continue
+
                 fires.append({
                     'id': fire_id,
                     'date': date,
-                    'status': fire_status,
+                    'status': transformed_status,
                     'typeEn': type_en,
                     'typePt': type_pt
                 })
