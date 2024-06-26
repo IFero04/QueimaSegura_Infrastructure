@@ -23,7 +23,7 @@ def get_admin_status(admin_id, session_id):
             query = """
                 SELECT id
                 FROM permissions
-                WHERE gestor_user_id = null;
+                WHERE gestor_user_id IS null;
             """
             result = db.execute_query(query)
             fires_approved = len(result)
