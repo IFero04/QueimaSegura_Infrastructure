@@ -141,14 +141,23 @@ def get_user_status(user_id, session_id):
         
         if result:
             for fire_id, fire_status in result:
+                query = """
+                    SELECT icnf_permited, gestor_permited
+                    FROM permissions
+                    WHERE fire_id = %s;
+                """
+                parameters = (fire_id, )
+                perm_result = db.execute_query(query, parameters)
                 if fire_status == "Scheduled":
-                    user_fires_pending += 1
-                elif fire_status == "Ongoing":
-                    if __check_permissions(fire_id):
+                    if perm_result:
                         user_fires_pending += 1
                 elif fire_status == "Completed":
-                    if __check_permissions(fire_id):
+                    if perm_result and perm_result[0] and  perm_result[1]:
                         user_fires_complete += 1
+                    else:
+                        user_fires_complete += 1
+
+                    
         
         return {
             'status': 'OK!',
