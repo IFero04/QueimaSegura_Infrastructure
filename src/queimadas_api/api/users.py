@@ -108,20 +108,6 @@ def update_user(user_id, session_id, user):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
 
 ## STATUS
-def __check_permissions(fire_id):
-    query = """
-        SELECT icnf_permited, gestor_permited
-        FROM permissions
-        WHERE fire_id = %s
-    """
-    parameters = (fire_id, )
-    with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
-        permissions = db.execute_query(query, parameters)
-    if not permissions:
-        return True
-    icnf_permited, gestor_permited = permissions[0]
-    return icnf_permited and gestor_permited
-
 def get_user_status(user_id, session_id):
     try:
         check_session(user_id, session_id)
@@ -141,18 +127,12 @@ def get_user_status(user_id, session_id):
             
             if result:
                 for fire_id, fire_status in result:
-                    query = """
-                        SELECT icnf_permited, gestor_permited
-                        FROM permissions
-                        WHERE fire_id = %s;
-                    """
-                    parameters = (fire_id, )
-                    permissions = db.execute_query(query, parameters)
+                    permited = check_permissions(fire_id)
                     if fire_status == "Scheduled":
-                        if permissions:
+                        if not permited:
                             user_fires_pending += 1
                     elif fire_status == "Completed":
-                        if permissions and permissions[0] and  permissions[1]:
+                        if permited:
                             user_fires_complete += 1
                         else:
                             user_fires_complete += 1

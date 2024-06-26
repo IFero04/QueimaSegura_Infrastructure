@@ -146,3 +146,17 @@ def check_existing_fire(user_id, zip_code_id, date):
         
         if result:
             raise Exception('Fire already exists')
+        
+def check_permissions(fire_id):
+    query = """
+        SELECT icnf_permited, gestor_permited
+        FROM permissions
+        WHERE fire_id = %s
+    """
+    parameters = (fire_id, )
+    with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
+        permissions = db.execute_query(query, parameters, multi=False)
+    if not permissions:
+        return True
+    icnf_permited, gestor_permited = permissions
+    return icnf_permited and gestor_permited
