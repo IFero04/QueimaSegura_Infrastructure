@@ -136,29 +136,27 @@ def get_user_status(user_id, session_id):
         with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
             result = db.execute_query(query, parameters)
         
-        user_fires_complete = 0
-        user_fires_pending = 0
-        
-        if result:
-            for fire_id, fire_status in result:
-                query = """
-                    SELECT icnf_permited, gestor_permited
-                    FROM permissions
-                    WHERE fire_id = %s;
-                """
-                parameters = (fire_id, )
-                perm_result = db.execute_query(query, parameters)
-                if fire_status == "Scheduled":
-                    if perm_result:
-                        user_fires_pending += 1
-                elif fire_status == "Completed":
-                    if perm_result and perm_result[0] and  perm_result[1]:
-                        user_fires_complete += 1
-                    else:
-                        user_fires_complete += 1
+            user_fires_complete = 0
+            user_fires_pending = 0
+            
+            if result:
+                for fire_id, fire_status in result:
+                    query = """
+                        SELECT icnf_permited, gestor_permited
+                        FROM permissions
+                        WHERE fire_id = %s;
+                    """
+                    parameters = (fire_id, )
+                    perm_result = db.execute_query(query, parameters)
+                    if fire_status == "Scheduled":
+                        if perm_result:
+                            user_fires_pending += 1
+                    elif fire_status == "Completed":
+                        if perm_result and perm_result[0] and  perm_result[1]:
+                            user_fires_complete += 1
+                        else:
+                            user_fires_complete += 1
 
-                    
-        
         return {
             'status': 'OK!',
             'message': 'User status found successfully!',
