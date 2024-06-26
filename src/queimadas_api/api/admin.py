@@ -14,10 +14,43 @@ def _check_new_user(user):
     check_nif(user.nif)
     check_type(user.type)
 
+def get_admin_status(admin_id, session_id):
+    try:
+        check_admin_authenticity(admin_id, session_id)
+        fires_to_aprrove = 0
+
+        with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
+            query = """
+                SELECT id
+                FROM permissions
+                WHERE gestor_user_id = null;
+            """
+            result = db.execute_query(query)
+            fires_approved = len(result)
+            query = """
+                SELECT id
+                FROM permissions
+                WHERE gestor_user_id = %s;
+            """
+            parameters = (admin_id, )
+            result = db.execute_query(query, parameters)
+            fires_to_aprrove = len(result)
+
+        return {
+            'status': 'OK!',
+            'message': 'Admin status found successfully!',
+            'result': {
+                'firesApproved': fires_approved,
+                'firesWaiting': fires_to_aprrove
+            }
+        }
+    
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+    
 def get_users(admin_id, session_id):
     try:
         check_admin_authenticity(admin_id, session_id)
-        print("Entrei Aqui")
         with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
             query = """
                 SELECT id, full_name, email, nif, type, active
