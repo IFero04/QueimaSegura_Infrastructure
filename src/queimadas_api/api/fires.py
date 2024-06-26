@@ -106,9 +106,7 @@ def get_user_fires(user_id, session_id):
 
             parameters = (user_id,)
             result = db.execute_query(query, parameters)
-            if not result:
-                raise Exception('No fires found')
-
+            
             fires = []
             for fire in result:
                 fire_id, date, fire_status, type_en, type_pt = fire
