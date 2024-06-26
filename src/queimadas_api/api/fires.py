@@ -88,10 +88,12 @@ def create_fire(user_id, session_id, fire):
                     f.user_id = %s AND f.id = %s AND f.cancelled = FALSE
             """
 
-            parameters = (user_id, fire_id, )
+            parameters = (user_id, fire_id)
             result = db.execute_query(query, parameters, multi=False)
+            if not result:
+                raise Exception('Error fetching fire details')
 
-            date, fire_status, type_en, type_pt = fire
+            date, fire_status, type_en, type_pt = result
 
             return {
                 'status': 'OK!',
