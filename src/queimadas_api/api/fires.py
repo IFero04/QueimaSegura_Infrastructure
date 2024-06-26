@@ -143,7 +143,7 @@ def get_user_fires(user_id, session_id):
                 """
                 parameters = (fire_id,)
                 permissions = db.execute_query(query, parameters)
-                
+
                 if fire_status == 'Scheduled' and permissions:
                     icnf_permitted, gestor_permitted = permissions[0]
                     if not icnf_permitted or not gestor_permitted:
@@ -153,10 +153,15 @@ def get_user_fires(user_id, session_id):
                 else:
                     transformed_status = fire_status
                 
+                if fire_status == 'Ongoing' and permissions:
+                    icnf_permitted, gestor_permitted = permissions[0]
+                    if not icnf_permitted or not gestor_permitted:
+                        transformed_status = 'Not Aprroved'
+
                 if fire_status == 'Completed' and permissions:
                     icnf_permitted, gestor_permitted = permissions[0]
                     if not icnf_permitted or not gestor_permitted:
-                        continue
+                        transformed_status = 'Not Aprroved'
 
                 fires.append({
                     'id': fire_id,
