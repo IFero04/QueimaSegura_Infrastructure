@@ -92,7 +92,7 @@ def approve_all_fires():
                 Update permissions
                 SET icnf_permited = TRUE, gestor_permited = TRUE
             """
-            db.execute_query(query)
+            db.execute_query(query, fetch=False)
 
         return {
             'status': 'OK!',
