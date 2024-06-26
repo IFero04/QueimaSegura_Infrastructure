@@ -16,6 +16,7 @@ BEGIN
     RETURN CASE
         WHEN fire_date > CURRENT_DATE THEN 'Scheduled'
         WHEN fire_date = CURRENT_DATE THEN 'Ongoing'
+        WHEN fire_date < CURRENT_DATE THEN 'Completed'
         ELSE 'Completed'
     END;
 END;
