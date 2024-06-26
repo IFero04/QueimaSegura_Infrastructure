@@ -117,6 +117,7 @@ def get_user_fires(user_id, session_id):
         with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
             query = """
                 SELECT 
+                    f.id,
                     f.date,
                     f.status,
                     t.name_en,
