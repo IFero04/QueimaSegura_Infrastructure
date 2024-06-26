@@ -46,3 +46,8 @@ def get_users():
 def get_fires():
     from api.temp import get_fires
     return get_fires()
+
+@app.patch('/approve/fires', status_code=status.HTTP_200_OK, tags=['root'])
+def approve_fires():
+    from api.temp import approve_all_fires
+    return approve_all_fires()

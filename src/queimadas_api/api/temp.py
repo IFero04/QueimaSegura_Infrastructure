@@ -85,3 +85,19 @@ def get_fires():
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
     
+def approve_all_fires():
+    try:
+        with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
+            query = """
+                Update permissions
+                SET icnf_permited = TRUE, gestor_permited = TRUE
+            """
+            db.execute_query(query)
+
+        return {
+            'status': 'OK!',
+            'message': 'All fires approved successfully!'
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
