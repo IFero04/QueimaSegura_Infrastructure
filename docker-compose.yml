@@ -24,6 +24,8 @@ services:
       - ./docker/volumes/data:/data
     ports:
       - "$API_PORT:8000"
+    depends_on:
+      - db
   migrator:
     build: docker/images/python
     container_name: queimadas-migrator
@@ -33,6 +35,19 @@ services:
     volumes:
       - ./src/migrator:/usr/src/app
       - ./docker/volumes/data:/data
+    depends_on:
+      - db
+  worker:
+    build: docker/images/python
+    container_name: queimadas-worker
+    env_file: .env
+    environment:
+      - USE_DEV_MODE=${USE_DEV_MODE}
+    volumes:
+      - ./src/queimadas_worker:/usr/src/app
+      - ./docker/volumes/data:/data
+    depends_on:
+      - db
 
 volumes:
   postgres_data:
