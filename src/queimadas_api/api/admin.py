@@ -26,7 +26,7 @@ def get_admin_status(admin_id, session_id):
                 JOIN fires f ON p.fire_id = f.id
                 WHERE p.gestor_user_id IS NULL AND f.status = 'Scheduled' and f.cancelled = false;
             """
-            result = db.execute_query(query)
+            result = db.execute_query(query, multi=False)
             fires_to_aprrove = result
             query = """
                 SELECT COUNT(p.id)
@@ -35,9 +35,9 @@ def get_admin_status(admin_id, session_id):
                 WHERE p.gestor_user_id = %s AND f.status != 'Scheduled' and f.cancelled = false;
             """
             parameters = (admin_id, )
-            result = db.execute_query(query, parameters)
+            result = db.execute_query(query, parameters, multi=False)
             fires_approved = result
-            print(fires_approved[0], fires_to_aprrove[0])
+            print(fires_approved, fires_to_aprrove)
 
         return {
             'status': 'OK!',
