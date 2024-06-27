@@ -69,3 +69,16 @@ def get_user(search: str, admin_id, session_id: str):
 def get_request_to_approve(admin_id, session_id):
     from api.admin import get_request_to_approve
     return get_request_to_approve(admin_id, session_id)
+
+class Fire(BaseModel):
+    date: str
+    typeId: int
+    reasonId: int
+    zipCodeId: int
+    location: Union[str, None] = None
+    observations: Union[str, None] = None
+
+@router.post('/fire', status_code=status.HTTP_201_CREATED)
+def create_fire(admin_id: str, session_id: str, user_id: str, fire: Fire):
+    from api.admin import create_fire
+    return create_fire(admin_id, session_id, user_id, fire)

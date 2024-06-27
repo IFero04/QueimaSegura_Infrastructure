@@ -1,4 +1,4 @@
-import uuid
+from datetime import datetime
 from fastapi import HTTPException, status
 from util.db import PostgresDB
 from util.config import settings
@@ -271,3 +271,78 @@ def get_request_to_approve(admin_id, session_id):
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
                             
+def __check_fire_date(fire_date_str):
+    fire_date = datetime.strptime(fire_date_str, '%m/%d/%Y').date()
+    today = datetime.today().date()
+    if fire_date <= today:
+        raise Exception('Date must be greater than today')
+
+## REGISTER
+def __check_new_fire(user_id, fire):
+    check_type_id(fire.typeId)
+    check_reason_id(fire.reasonId)
+    check_zip_code_id(fire.zipCodeId)
+    check_fire_approved(fire.zipCodeId, fire.date)
+    check_existing_fire(user_id, fire.zipCodeId, fire.date)
+    __check_fire_date(fire.date)
+
+def create_fire(admin_id, session_id, user_id, fire):
+    try:
+        check_admin_authenticity(admin_id, session_id)
+        check_user_id(user_id)
+        __check_new_fire(user_id, fire)
+    
+        with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
+            query = """
+                INSERT INTO fires (date, type_id, reason_id, zip_code_id, user_id)
+                VALUES (%s, %s, %s, %s, %s)
+                RETURNING id
+            """
+
+            parameters = (fire.date, fire.typeId, fire.reasonId, fire.zipCodeId, user_id)
+            result = db.execute_query(query, parameters, multi=False)
+            if not result:
+                raise Exception('Fire not created')
+            
+            fire_id = result[0]
+
+            if fire.location:
+                query = """
+                    UPDATE fires
+                    SET location = %s
+                    WHERE id = %s
+                """
+                parameters = (fire.location, fire_id)
+                db.execute_query(query, parameters, fetch=False)
+            
+            if fire.observations:
+                query = """
+                    UPDATE fires
+                    SET observations = %s
+                    WHERE id = %s
+                """
+                parameters = (fire.observations, fire_id)
+                db.execute_query(query, parameters, fetch=False)
+
+            query = """
+                SELECT id, name_pt
+                FROM types
+                WHERE id = %s
+            """
+            parameters = (fire.typeId,)
+            result = db.execute_query(query, parameters, multi=False)
+            fire_type = result[1]
+            if fire_type == 'Queimada':
+                query = """
+                    INSERT INTO permissions (fire_id)
+                    VALUES (%s)
+                """
+                parameters = (fire_id,)
+                db.execute_query(query, parameters, fetch=False)
+
+            return {
+                'status': 'OK!',
+                'message': 'Fire created successfully!',
+            }
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
