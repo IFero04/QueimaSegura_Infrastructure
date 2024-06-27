@@ -37,7 +37,7 @@ def get_admin_status(admin_id, session_id):
             parameters = (admin_id, )
             result = db.execute_query(query, parameters)
             fires_approved = result
-            print(fires_approved, fires_to_aprrove)
+            print(fires_approved[0], fires_to_aprrove[0])
 
         return {
             'status': 'OK!',
