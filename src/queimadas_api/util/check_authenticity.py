@@ -140,6 +140,7 @@ def check_existing_fire(user_id, zip_code_id, date):
             WHERE user_id = %s
             AND zip_code_id = %s
             AND date = %s;
+            AND cancelled = False;
         """
         parameters = (user_id, zip_code_id, date)
         result = db.execute_query(query, parameters, multi=False)
