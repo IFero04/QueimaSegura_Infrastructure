@@ -44,7 +44,8 @@ def get_fires():
             query = """
                 SELECT 
                     f.id, 
-                    f.date, 
+                    f.date,
+                    f.status, 
                     t.name_en AS type, 
                     r.name_en AS reason, 
                     z.zip_code, 
@@ -66,10 +67,11 @@ def get_fires():
 
             fires = []
             for fire in result:
-                fire_id, date, type, reason, zip_code, location, observations = fire
+                fire_id, date, status, type, reason, zip_code, location, observations = fire
                 fires.append({
                     'fireId': fire_id,
                     'date': date,
+                    'status': status,
                     'type': type,
                     'reason': reason,
                     'zipCode': zip_code,
