@@ -8,7 +8,7 @@ def main():
             UPDATE public.fires
             SET status = calculate_fire_status(date)
         """
-        db.execute(query)
+        db.execute_query(query, fetch=False)
 
 if __name__ == '__main__':
     print("Loading DataBase ...")
