@@ -44,8 +44,8 @@ CREATE TABLE public.types (
 );
 
 INSERT INTO public.types (name_pt, name_en) VALUES 
-    ('Queima', 'Burning'), 
-    ('Queimada', 'Large Area Burning');
+    ('Queima', 'Bonfire'), 
+    ('Queimada', 'Burn');
 
 -- Create the 'reasons' table
 CREATE TABLE public.reasons (
