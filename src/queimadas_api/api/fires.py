@@ -276,7 +276,7 @@ def get_fire_detail(user_id, session_id, fire_id):
                         'permissions': {
                             'icnfPermitted': icnf_permited,
                             'icnfIdentification': f"{icnf_number} - {icnf_name}",
-                            'gestorPermitted': gestor_permited
+                            'managerPermitted': gestor_permited
                         }
                     }
                 }
