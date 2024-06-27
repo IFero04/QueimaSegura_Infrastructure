@@ -59,8 +59,6 @@ def get_users(admin_id, session_id):
                 FROM users
             """
             result = db.execute_query(query, fetch=True)
-            if not result:
-                raise Exception('No users found')
             
             users = []
             for user in result:
