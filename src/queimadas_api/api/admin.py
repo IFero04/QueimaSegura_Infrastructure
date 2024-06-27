@@ -200,5 +200,36 @@ def unban_user(user_id, admin_id, session_id):
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
     
+def search_user(search, admin_id, session_id):
+    try:
+        check_admin_authenticity(admin_id, session_id)
+        with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
+            query = """
+                SELECT id, full_name, email, type, active, deleted
+                FROM users
+                WHERE full_name ILIKE %s OR email ILIKE %s;
+            """
+            parameters = (f'%{search}%', f'%{search}%', )
+            result = db.execute_query(query, parameters)
+            
+            users = []
+            for user in result:
+                user_id, name, email, user_type, active, deleted = user
+                if deleted:
+                    continue
+                users.append({
+                    'userId': user_id,
+                    'fullName': name,
+                    'email': email,
+                    'type': int(user_type),
+                    'active': active
+                })
 
+            return {
+                'status': 'OK!',
+                'message': 'Users found successfully!',
+                'result': users
+            }
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
                             
