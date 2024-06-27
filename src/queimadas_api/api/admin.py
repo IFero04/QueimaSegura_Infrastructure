@@ -21,20 +21,22 @@ def get_admin_status(admin_id, session_id):
 
         with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
             query = """
-                SELECT id
-                FROM permissions
-                WHERE gestor_user_id IS null;
+                SELECT COUNT(p.id)
+                FROM permissions p
+                JOIN fires f ON p.fire_id = f.id
+                WHERE p.gestor_user_id IS NULL AND f.status = 'Scheduled' and f.cancelled = false;
             """
             result = db.execute_query(query)
-            fires_to_aprrove = len(result)
+            fires_to_aprrove = result
             query = """
-                SELECT id
-                FROM permissions
-                WHERE gestor_user_id = %s;
+                SELECT COUNT(p.id)
+                FROM permissions p
+                JOIN fires f ON p.fire_id = f.id
+                WHERE gestor_user_id = %s ADN f.status != 'Scheduled' and f.cancelled = false;
             """
             parameters = (admin_id, )
             result = db.execute_query(query, parameters)
-            fires_approved = len(result)
+            fires_approved = result
 
         return {
             'status': 'OK!',
