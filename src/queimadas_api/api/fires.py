@@ -244,7 +244,6 @@ def get_fire_detail(user_id, session_id, fire_id):
                             'nameEn': name_en
                         },
                         'zipCode': {
-                            'id': zip_code,
                             'zipCode': zip_code,
                             'locationName': location_name,
                             'artName': ART_name,
