@@ -112,27 +112,17 @@ def create_user(admin_id ,session_id, user):
         
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=errorMsg)
     
-def update_user(user_id, admin_id, session_id, user):
+def update_user_perms(user_id, admin_id, session_id, perm):
     try:
         check_admin_authenticity(admin_id, session_id)
         check_user_id(user_id)
-        queries_and_params = []
-        if user.email:
-            check_email(user.email)
-            queries_and_params.append(("UPDATE users SET email = %s WHERE id = %s;", (user.email, user_id)))
-        if user.fullName:
-            check_full_name(user.fullName)
-            queries_and_params.append(("UPDATE users SET full_name = %s WHERE id = %s;", (user.fullName, user_id)))
-        if user.nif:
-            check_nif(user.nif)
-            queries_and_params.append(("UPDATE users SET nif = %s WHERE id = %s;", (user.nif, user_id)))
-        if user.type:
-            check_type(user.type)
-            queries_and_params.append(("UPDATE users SET type = %s WHERE id = %s;", (user.type, user_id)))
 
         with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
-            for query, parameters in queries_and_params:
-                db.execute_query(query, parameters, fetch=False)
+            querry = """
+                UPDATE users SET type = %s WHERE id = %s
+            """
+            parameters = (user_id, perm)
+            db.execute_query(querry, parameters, fetch=False)
         
         return {
             'status': 'OK!',

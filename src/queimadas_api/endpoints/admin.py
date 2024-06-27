@@ -35,14 +35,10 @@ def create_user(admin_id: str, session_id: str , user: User):
     user.fullName = user.fullName.title()
     return create_user(admin_id, session_id, user)
 
-@router.put('/users/{user_id}', status_code=status.HTTP_202_ACCEPTED)
-def update_user(user_id: str, admin_id, session_id: str, user: UserUpdate):
+@router.patch('/users/{user_id}/{perm}', status_code=status.HTTP_202_ACCEPTED)
+def update_user(user_id: str, perm: int, admin_id, session_id: str):
     from api.admin import update_user
-    if user.email:
-        user.email = user.email.lower()
-    if user.fullName:
-        user.fullName = user.fullName.title()
-    return update_user(user_id, admin_id, session_id, user)
+    return update_user(user_id, admin_id, session_id, perm)
 
 @router.delete('/users/{user_id}', status_code=status.HTTP_202_ACCEPTED)
 def delete_user(user_id: str, admin_id, session_id: str):
