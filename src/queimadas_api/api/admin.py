@@ -112,7 +112,7 @@ def create_user(admin_id ,session_id, user):
         
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=errorMsg)
     
-def update_user_perms(user_id, admin_id, session_id, perm):
+def update_user_perms(user_id, perm, admin_id, session_id):
     try:
         check_admin_authenticity(admin_id, session_id)
         check_user_id(user_id)
@@ -121,7 +121,7 @@ def update_user_perms(user_id, admin_id, session_id, perm):
             querry = """
                 UPDATE users SET type = %s WHERE id = %s
             """
-            parameters = (user_id, perm)
+            parameters = (perm, user_id)
             db.execute_query(querry, parameters, fetch=False)
         
         return {

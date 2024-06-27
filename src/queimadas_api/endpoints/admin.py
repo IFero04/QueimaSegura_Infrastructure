@@ -38,7 +38,7 @@ def create_user(admin_id: str, session_id: str , user: User):
 @router.patch('/users/{user_id}/{perm}', status_code=status.HTTP_202_ACCEPTED)
 def update_user(user_id: str, perm: int, admin_id, session_id: str):
     from api.admin import update_user_perms
-    return update_user_perms(user_id, admin_id, session_id, perm)
+    return update_user_perms(user_id, perm, admin_id, session_id)
 
 @router.delete('/users/{user_id}', status_code=status.HTTP_202_ACCEPTED)
 def delete_user(user_id: str, admin_id, session_id: str):
