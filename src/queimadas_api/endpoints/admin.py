@@ -64,3 +64,8 @@ def unban_user(user_id: str, admin_id, session_id: str):
 def get_user(search: str, admin_id, session_id: str):
     from api.admin import search_user
     return search_user(search, admin_id, session_id)
+
+@router.get('/requests', status_code=status.HTTP_200_OK)
+def get_request_to_approve(admin_id, session_id):
+    from api.admin import get_request_to_approve
+    return get_request_to_approve(admin_id, session_id)

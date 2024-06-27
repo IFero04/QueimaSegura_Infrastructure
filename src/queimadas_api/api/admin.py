@@ -205,28 +205,68 @@ def search_user(search, admin_id, session_id):
         check_admin_authenticity(admin_id, session_id)
         with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
             query = """
-                SELECT id, full_name, email, deleted
+                SELECT id, full_name, email, nif, deleted
                 FROM users
-                WHERE full_name ILIKE %s OR email ILIKE %s;
+                WHERE full_name ILIKE %s OR email ILIKE %s OR nif ILIKE %s AND type != 2;
             """
-            parameters = (f'%{search}%', f'%{search}%', )
+            parameters = (f'%{search}%', f'%{search}%', f'%{search}%', )
             result = db.execute_query(query, parameters)
             
             users = []
             for user in result:
-                user_id, name, email, deleted = user
+                user_id, name, email, nif, deleted = user
                 if deleted:
                     continue
                 users.append({
                     'userId': user_id,
                     'fullName': name,
-                    'email': email
+                    'email': email,
+                    'nif': nif
                 })
 
             return {
                 'status': 'OK!',
                 'message': 'Users found successfully!',
                 'result': users
+            }
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    
+def get_request_to_approve(admin_id, session_id):
+    try:
+        check_admin_authenticity(admin_id, session_id)
+        with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
+            query = """
+                SELECT p.id, f.id, f.date, r.name_pt, r.name_en, c.name
+                FROM permissions p
+                JOIN fires f ON p.fire_id = f.id
+                JOIN reasons r ON f.reason_id = r.id
+                JOIN zip_codes z ON f.zip_code_id = z.id
+                JOIN counties c ON z.county_id = c.id
+                WHERE p.gestor_user_id IS NULL AND f.status = 'Scheduled' and f.cancelled = false;
+            """
+            result = db.execute_query(query, fetch=True)
+            
+            requests = []
+            for request in result:
+                perm_id, fire_id, date, reason_pt, reason_en, county= request
+                requests.append({
+                    'permId': perm_id,
+                    'fire': {
+                        'id': fire_id,
+                        'date': date,
+                        'county': county
+                    },
+                    'reason': {
+                        'namePt': reason_pt,
+                        'nameEn': reason_en
+                    }
+                })
+
+            return {
+                'status': 'OK!',
+                'message': 'Requests found successfully!',
+                'result': requests
             }
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
