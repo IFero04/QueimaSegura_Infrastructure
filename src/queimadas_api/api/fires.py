@@ -291,6 +291,22 @@ def delete_fire(user_id, session_id, fire_id):
 
         with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
             query = """
+                SELECT status
+                FROM fires
+                WHERE id = %s
+            """
+            parameters = (fire_id,)
+            result = db.execute_query(query, parameters, multi=False)
+            if not result:
+                raise Exception('Fire not found')
+            
+            if result == 'Completed':
+                raise Exception('Fire already completed')
+            
+            if result == 'Ongoing':
+                raise Exception('Fire already ongoing')
+
+            query = """
                 UPDATE fires
                 SET cancelled = TRUE
                 WHERE id = %s
