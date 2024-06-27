@@ -65,8 +65,8 @@ def get_users(admin_id, session_id):
             users = []
             for user in result:
                 users.append({
-                    'user_id': user[0],
-                    'full_name': user[1],
+                    'userId': user[0],
+                    'fullName': user[1],
                     'email': user[2],
                     'type': int(user[3]),
                     'active': user[4],
