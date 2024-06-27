@@ -205,7 +205,7 @@ def search_user(search, admin_id, session_id):
         check_admin_authenticity(admin_id, session_id)
         with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
             query = """
-                SELECT id, full_name, email, type, active, deleted
+                SELECT id, full_name, email, deleted
                 FROM users
                 WHERE full_name ILIKE %s OR email ILIKE %s;
             """
@@ -214,15 +214,13 @@ def search_user(search, admin_id, session_id):
             
             users = []
             for user in result:
-                user_id, name, email, user_type, active, deleted = user
+                user_id, name, email, deleted = user
                 if deleted:
                     continue
                 users.append({
                     'userId': user_id,
                     'fullName': name,
-                    'email': email,
-                    'type': int(user_type),
-                    'active': active
+                    'email': email
                 })
 
             return {
