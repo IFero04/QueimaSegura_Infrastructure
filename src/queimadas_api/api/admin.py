@@ -37,7 +37,7 @@ def get_admin_status(admin_id, session_id):
             parameters = (admin_id, )
             result = db.execute_query(query, parameters, multi=False)
             fires_approved = result
-            
+
         return {
             'status': 'OK!',
             'message': 'Admin status found successfully!',
@@ -55,9 +55,8 @@ def get_users(admin_id, session_id):
         check_admin_authenticity(admin_id, session_id)
         with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
             query = """
-                SELECT id, full_name, email, nif, type, active
+                SELECT id, full_name, email, type, active, deleted
                 FROM users
-                WHERE deleted = false
             """
             result = db.execute_query(query, fetch=True)
             if not result:
@@ -69,9 +68,9 @@ def get_users(admin_id, session_id):
                     'user_id': user[0],
                     'full_name': user[1],
                     'email': user[2],
-                    'nif': user[3],
-                    'type': int(user[4]),
-                    'active': user[5]
+                    'type': int(user[3]),
+                    'active': user[4],
+                    'deleted': user[5]
                 })
 
             return {
