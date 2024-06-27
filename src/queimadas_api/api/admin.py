@@ -32,7 +32,7 @@ def get_admin_status(admin_id, session_id):
                 SELECT COUNT(p.id)
                 FROM permissions p
                 JOIN fires f ON p.fire_id = f.id
-                WHERE p.gestor_user_id = %s ADN f.status != 'Scheduled' and f.cancelled = false;
+                WHERE p.gestor_user_id = %s AND f.status != 'Scheduled' and f.cancelled = false;
             """
             parameters = (admin_id, )
             result = db.execute_query(query, parameters)
