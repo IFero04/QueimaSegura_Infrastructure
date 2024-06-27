@@ -139,7 +139,7 @@ def check_existing_fire(user_id, zip_code_id, date):
             FROM public.fires
             WHERE user_id = %s
             AND zip_code_id = %s
-            AND date = %s;
+            AND date = %s
             AND cancelled = False;
         """
         parameters = (user_id, zip_code_id, date)
