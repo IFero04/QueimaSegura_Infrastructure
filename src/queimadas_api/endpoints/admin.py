@@ -49,7 +49,7 @@ def delete_user(user_id: str, admin_id, session_id: str):
     from api.admin import delete_user
     return delete_user(user_id, admin_id, session_id)
 
-@router.patch('/users/restore/{user_id}', status_code=status.HTTP_202_ACCEPTED)
+@router.patch('/users/{user_id}', status_code=status.HTTP_202_ACCEPTED)
 def restore_user(user_id: str, admin_id, session_id: str):
     from api.admin import restore_user
     return restore_user(user_id, admin_id, session_id)
