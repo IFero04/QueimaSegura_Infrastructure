@@ -20,7 +20,7 @@ BEGIN
         ELSE 'Unknown'
     END;
 END;
-$$ LANGUAGE plpgsql STABLE;
+$$ LANGUAGE plpgsql IMMUTABLE;
 
 -- Create the 'users' table
 CREATE TABLE public.users (
