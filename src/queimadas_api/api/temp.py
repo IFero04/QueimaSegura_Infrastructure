@@ -10,7 +10,7 @@ def get_users():
     try:
         with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
             query = """
-                SELECT id, session_id, full_name, email, nif, password, type
+                SELECT id, session_id, full_name, email, nif, password, type, active, deleted
                 FROM users;
             """
             result = db.execute_query(query, fetch=True)
@@ -26,7 +26,9 @@ def get_users():
                     'email': user[3],
                     'nif': user[4],
                     'password': user[5],
-                    'type': int(user[6])
+                    'type': int(user[6]),
+                    'active': user[7],
+                    'deleted': user[8]
                 })
 
         return {
