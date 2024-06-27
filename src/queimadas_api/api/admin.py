@@ -158,6 +158,23 @@ def delete_user(user_id, admin_id, session_id):
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
     
+def restore_user(user_id, admin_id, session_id):
+    try:
+        check_admin_authenticity(admin_id, session_id)
+        check_user_id(user_id)
+        with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
+            query = "Update users SET deleted = false WHERE id = %s;"
+            parameters = (user_id, )
+            db.execute_query(query, parameters, fetch=False)
+        
+        return {
+            'status': 'OK!',
+            'message': 'User restored'
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))   
+
 def ban_user(user_id, admin_id, session_id):
     try:
         check_admin_authenticity(admin_id, session_id)
