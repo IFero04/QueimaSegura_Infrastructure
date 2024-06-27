@@ -160,12 +160,16 @@ def delete_user(user_id, admin_id, session_id):
     
 def ban_user(user_id, admin_id, session_id):
     try:
+        print(user_id, admin_id, session_id)
         check_admin_authenticity(admin_id, session_id)
+        print("1")
         check_user_id(user_id)
+        print("2")
         with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
             query = "Update users SET active = false WHERE id = %s;"
             parameters = (user_id, )
             db.execute_query(query, parameters, fetch=False)
+            print("3")
         
         return {
             'status': 'OK!',
