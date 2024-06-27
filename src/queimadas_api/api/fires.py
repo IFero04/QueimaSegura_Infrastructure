@@ -195,12 +195,16 @@ def get_fire_detail(user_id, session_id, fire_id):
                     f.status,
                     f.location,
                     f.observations,
+                    r.name_pt,
+                    r.name_en,
                     z.zip_code,
                     z.location_name,
                     z.ART_name,
                     z.tronco
                 FROM 
                     fires f
+                JOIN
+                    reasons r ON f.reason_id = r.id
                 JOIN 
                     zip_codes z ON f.zip_code_id = z.id
                 WHERE 
@@ -212,7 +216,7 @@ def get_fire_detail(user_id, session_id, fire_id):
             if not result:
                 raise Exception('Fire not found')
 
-            cancelled, fire_id, date, fire_status, location, observations, zip_code, location_name, ART_name, tronco = result
+            cancelled, fire_id, date, fire_status, location, observations, name_pt, name_en, zip_code, location_name, ART_name, tronco = result
             if cancelled:
                 raise Exception('Fire cancelled')
             
@@ -235,6 +239,10 @@ def get_fire_detail(user_id, session_id, fire_id):
                             'latlng': location,
                             'observations': observations,
                         },
+                        'reason': {
+                            'namePt': name_pt,
+                            'nameEn': name_en
+                        },
                         'zipCode': {
                             'id': zip_code,
                             'zipCode': zip_code,
@@ -256,6 +264,10 @@ def get_fire_detail(user_id, session_id, fire_id):
                             'latlng': location,
                             'observations': observations,
                         },
+                        'reason': {
+                            'namePt': name_pt,
+                            'nameEn': name_en
+                        },
                         'zipCode': {
                             'id': zip_code,
                             'zipCode': zip_code,
@@ -265,8 +277,7 @@ def get_fire_detail(user_id, session_id, fire_id):
                         },
                         'permissions': {
                             'icnfPermitted': icnf_permited,
-                            'icnfNumber': icnf_number,
-                            'icnfName': icnf_name,
+                            'icnfIdentification': f"{icnf_number} - {icnf_name}",
                             'gestorPermitted': gestor_permited
                         }
                     }
