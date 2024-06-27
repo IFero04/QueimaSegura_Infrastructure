@@ -57,6 +57,7 @@ def get_users(admin_id, session_id):
             query = """
                 SELECT id, full_name, email, type, active, deleted
                 FROM users
+                WHERE type != 2;
             """
             result = db.execute_query(query, fetch=True)
             
