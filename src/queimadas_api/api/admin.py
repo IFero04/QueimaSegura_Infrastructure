@@ -63,7 +63,6 @@ def get_users(admin_id, session_id):
             
             users = []
             for user in result:
-                print(user)
                 user_id, name, email, user_type, active, deleted = user
                 users.append({
                     'userId': user_id,
