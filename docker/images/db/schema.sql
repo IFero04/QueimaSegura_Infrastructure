@@ -20,7 +20,7 @@ BEGIN
         ELSE 'Unknown'
     END;
 END;
-$$ LANGUAGE plpgsql IMMUTABLE;
+$$ LANGUAGE plpgsql STABLE;
 
 -- Create the 'users' table
 CREATE TABLE public.users (
@@ -131,6 +131,15 @@ CREATE TABLE public.permissions (
     gestor_reason       TEXT,
     gestor_user_id      UUID REFERENCES public.users(id)
 );
+
+CREATE OR REPLACE FUNCTION refresh_fire_status() RETURNS trigger AS $$
+BEGIN
+    NEW.status := calculate_fire_status(NEW.date);
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT cron.schedule('0 0 * * *', 'UPDATE public.fires SET status = calculate_fire_status(date);');
 
 
 -- Grant permissions to the 'api' user
