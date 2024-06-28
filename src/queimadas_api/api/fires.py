@@ -6,11 +6,15 @@ from util.check_authenticity import *
 from util.check_strings import *
 
   
-def __check_fire_date(fire_date_str):
+def __check_fire_date(fire_date_str, type_id):
     fire_date = datetime.strptime(fire_date_str, '%m/%d/%Y').date()
     today = datetime.today().date()
-    if fire_date <= today:
-        raise Exception('Date must be greater than today')
+    if type == 1:
+        if fire_date < today:
+            raise Exception('Date must be today or greater')
+    if fire_date < today:
+            raise Exception('Date must be greater than today')
+
 
 ## REGISTER
 def __check_new_fire(user_id, fire):
@@ -19,7 +23,7 @@ def __check_new_fire(user_id, fire):
     check_zip_code_id(fire.zipCodeId)
     check_fire_approved(fire.zipCodeId, fire.date)
     check_existing_fire(user_id, fire.zipCodeId, fire.date)
-    __check_fire_date(fire.date)
+    __check_fire_date(fire.date, fire.typeId)
 
 def create_fire(user_id, session_id, fire):
     try:
