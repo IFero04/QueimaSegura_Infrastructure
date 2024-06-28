@@ -6,7 +6,7 @@ def main():
     with PostgresDB(PG_HOST, PG_PORT, PG_DB_NAME, PG_USER, PG_PASSWORD) as db:
         query = """
             UPDATE public.fires
-            SET status = calculate_fire_status(date)
+            SET status = DEFAULT
         """
         db.execute_query(query, fetch=False)
 
