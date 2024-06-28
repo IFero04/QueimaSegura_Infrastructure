@@ -271,7 +271,6 @@ def get_request_to_approve(admin_id, session_id):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
                             
 def __check_fire_date(fire_date_str):
-    return
     fire_date = datetime.strptime(fire_date_str, '%m/%d/%Y').date()
     today = datetime.today().date()
     if fire_date <= today:
