@@ -9,7 +9,7 @@ from util.check_strings import *
 def __check_fire_date(fire_date_str, type_id):
     fire_date = datetime.strptime(fire_date_str, '%m/%d/%Y').date()
     today = datetime.today().date()
-    if type == 1:
+    if type_id == 1:
         if fire_date < today:
             raise Exception('Date must be today or greater')
     else:
