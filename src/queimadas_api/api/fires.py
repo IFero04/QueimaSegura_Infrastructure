@@ -12,7 +12,8 @@ def __check_fire_date(fire_date_str, type_id):
     if type == 1:
         if fire_date < today:
             raise Exception('Date must be today or greater')
-    if fire_date < today:
+    else:
+        if fire_date <= today:
             raise Exception('Date must be greater than today')
 
 
