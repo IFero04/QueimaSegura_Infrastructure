@@ -11,16 +11,6 @@ CREATE USER api WITH PASSWORD 'api';
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- Add status column to fires table
-CREATE OR REPLACE FUNCTION calculate_fire_status(fire_date DATE) RETURNS TEXT AS $$
-BEGIN
-    RETURN CASE
-        WHEN fire_date > CURRENT_DATE THEN 'Scheduled'
-        WHEN fire_date = CURRENT_DATE THEN 'Ongoing'
-        WHEN fire_date < CURRENT_DATE THEN 'Completed'
-        ELSE 'Unknown'
-    END;
-END;
-$$ LANGUAGE plpgsql IMMUTABLE;
 
 -- Create the 'users' table
 CREATE TABLE public.users (
@@ -115,9 +105,32 @@ CREATE TABLE public.fires (
     reason_id       INT NOT NULL REFERENCES public.reasons(id),
     zip_code_id     INT NOT NULL REFERENCES public.zip_codes(id),
     user_id         UUID NOT NULL REFERENCES public.users(id),
-    status          TEXT GENERATED ALWAYS AS (calculate_fire_status(date)) STORED,
+    status          TEXT,
     cancelled       BOOLEAN NOT NULL DEFAULT FALSE
 );
+
+CREATE OR REPLACE FUNCTION calculate_fire_status(fire_date DATE) RETURNS TEXT AS $$
+BEGIN
+    RETURN CASE
+        WHEN fire_date > CURRENT_DATE THEN 'Scheduled'
+        WHEN fire_date = CURRENT_DATE THEN 'Ongoing'
+        WHEN fire_date < CURRENT_DATE THEN 'Completed'
+        ELSE 'Unknown'
+    END;
+END;
+$$ LANGUAGE plpgsql IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION update_fire_status() RETURNS TRIGGER AS $$
+BEGIN
+    NEW.status = calculate_fire_status(NEW.date);
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_update_fire_status
+BEFORE INSERT OR UPDATE ON public.fires
+FOR EACH ROW
+EXECUTE FUNCTION update_fire_status();
 
 -- Create the 'permissions' table
 CREATE TABLE public.permissions (
