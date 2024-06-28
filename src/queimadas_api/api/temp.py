@@ -94,7 +94,8 @@ def approve_all_fires():
         with PostgresDB(settings.pg_host, settings.pg_port, settings.pg_db_name, settings.pg_user, settings.pg_password) as db:
             query = """
                 Update permissions
-                SET icnf_permited = TRUE, gestor_permited = TRUE
+                SET icnf_numbe = "2313Ab", icnf_name = "Marcelo Fernandes"
+                WHERE icnf_permited = TRUE
             """
             db.execute_query(query, fetch=False)
 
